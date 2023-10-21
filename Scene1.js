@@ -4,7 +4,7 @@ class Scene1 extends Phaser.Scene {
     }
     create() {
         this.add.text(20, 20, "Loading game...", {font: '25px Arial', fill: 'red'});
-        setTimeout( () => {this.scene.start("playGame")} , 5000);
+        setTimeout( () => {this.scene.start("playGame")} , 1000);
     }
 
 }
