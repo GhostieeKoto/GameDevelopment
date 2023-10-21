@@ -5,6 +5,8 @@ class Scene2 extends Phaser.Scene {
 
     }
 
+    tick = 0;
+
     create(){
         this.add.text(20,20,"Playing game", {font: '25px Comic sans', fill: 'green' });
         this.background = this.add.tileSprite(0, 0, config.width, config.height, "background");
@@ -35,7 +37,8 @@ class Scene2 extends Phaser.Scene {
 
 
     movePlayer(player, speed){
-        if (this.player.isMoving){
+        this.tick++;
+        if (this.player.isMoving && this.tick%8==0){
             player.x += speed;
             if(player.x > config.width){
                 this.resetPlayerPos(player);
