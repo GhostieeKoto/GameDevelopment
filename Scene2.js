@@ -17,13 +17,13 @@ class Scene2 extends Phaser.Scene {
         this.anims.create({
             key: "player_anim",
             frames: this.anims.generateFrameNumbers("player"),
-            frameRate: 10,
+            frameRate: 12,
             repeat: -1
         });
         this.anims.create({
             key: "player_death",
             frames: this.anims.generateFrameNumbers("playerdie"),
-            frameRate: 10,
+            frameRate: 12,
             repeat: 0,
             hideOnComplete: true
         });
@@ -46,7 +46,7 @@ class Scene2 extends Phaser.Scene {
     }
     update() {
         this.background.tilePositionX = 0.5;
-        this.movePlayer(this.player, 1);
+        this.movePlayer(this.player, 2.4);
 
         
 
@@ -55,6 +55,7 @@ class Scene2 extends Phaser.Scene {
         this.player.isMoving = false;
         gameObject.setTexture("playerdie");
         gameObject.play("player_death");
+        setTimeout( () => {this.scene.start("playGame")} , 2500);
     }
     resetPlayerPos(player){
         player.x = 0;
