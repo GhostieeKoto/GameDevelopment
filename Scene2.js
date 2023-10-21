@@ -11,5 +11,6 @@ class Scene2 extends Phaser.Scene {
         this.background.setOrigin(0,0);
         this.player = this.add.image(192, 108, "player");
         this.player.setOrigin(0,0);
+        this.player.setScale(2);
     }
 }
