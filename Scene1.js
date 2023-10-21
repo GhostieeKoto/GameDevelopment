@@ -4,7 +4,7 @@ class Scene1 extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image("/assets/menu/Backgrounds/GrassyMountains/Grassy_Mountains_preview_fullcolor.png");
+        this.load.image("background", "/assets/menu/Backgrounds/GrassyMountains/Grassy_Mountains_preview_fullcolor.png");
     }
     create() {
         this.add.text(20, 20, "Loading game...", {font: '25px Arial', fill: 'red'});
