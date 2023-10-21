@@ -10,6 +10,7 @@ class Scene2 extends Phaser.Scene {
         this.background = this.add.tileSprite(0, 0, config.width, config.height, "background");
         this.background.setOrigin(0,0);
         this.player = this.add.sprite(0, 0, "player");
+        this.player.isMoving = true;
         this.player.setOrigin(0,0);
         this.player.setScale(1);
         this.anims.create({
@@ -34,10 +35,13 @@ class Scene2 extends Phaser.Scene {
 
 
     movePlayer(player, speed){
-        player.x += speed;
-        if(player.x > config.width){
-            this.resetPlayerPos(player);
+        if (this.player.isMoving){
+            player.x += speed;
+            if(player.x > config.width){
+                this.resetPlayerPos(player);
+            }
         }
+
     }
     update() {
         this.background.tilePositionX = 0.5;
@@ -47,12 +51,12 @@ class Scene2 extends Phaser.Scene {
 
     }
     destroyPlayer(pointer, gameObject){
+        this.player.isMoving = false;
         gameObject.setTexture("playerdie");
         gameObject.play("player_death");
     }
     resetPlayerPos(player){
         player.x = 0;
-        var randomY = Phaser.Math.Between(0, config.height);
-        player.y = randomY;
+        player.y = Phaser.Math.Between(0, config.height);
     }
 }
