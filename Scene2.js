@@ -11,6 +11,21 @@ class Scene2 extends Phaser.Scene {
         this.background.setOrigin(0,0);
         this.player = this.add.image(0, 0, "player");
         this.player.setOrigin(0,0);
-        this.player.setScale(3, 3);
+        this.player.setScale(0.25);
+    }
+
+    movePlayer(player, speed){
+        player.x += speed;
+        if(player.x > config.width){
+            this.resetPlayerPos(player);
+        }
+    }
+    update() {
+        this.movePlayer(this.player, 1);
+    }
+    resetPlayerPos(player){
+        player.x = 0;
+        var randomY = Phaser.Math.Between(0, config.height);
+        player.y = randomY;
     }
 }
