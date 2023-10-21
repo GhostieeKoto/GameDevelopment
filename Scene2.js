@@ -45,7 +45,7 @@ class Scene2 extends Phaser.Scene {
     }
     update() {
         this.background.tilePositionX = 0.5;
-        this.movePlayer(this.player, 2.4);
+        this.movePlayer(this.player, 2.5);
 
         
 
