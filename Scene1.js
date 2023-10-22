@@ -5,7 +5,7 @@ class Scene1 extends Phaser.Scene {
 
     preload() {
         this.load.image("background", "/assets/menu/Backgrounds/GrassyMountains/Grassy_Mountains_preview_fullcolor.png");
-        this.load.spritesheet("player", "assets/sprites/hobbits/Run.png",{
+        this.load.spritesheet("player_run", "assets/sprites/hobbits/Run.png",{
             frameWidth: 192,
             frameHeight: 192 
         });
@@ -13,7 +13,19 @@ class Scene1 extends Phaser.Scene {
             frameWidth: 192,
             frameHeight: 192 
         });
-        this.load.spritesheet("playerdie", "assets/sprites/hobbits/PlayerDeath.png",{
+        this.load.spritesheet("player_die", "assets/sprites/hobbits/PlayerDeath.png",{
+            frameWidth: 192,
+            frameHeight: 192 
+        });
+        this.load.spritesheet("player_stop", "assets/sprites/hobbits/Stop.png",{
+            frameWidth: 192,
+            frameHeight: 192 
+        });
+        this.load.spritesheet("player_attack", "assets/sprites/hobbits/Attack.png",{
+            frameWidth: 192,
+            frameHeight: 192 
+        });
+        this.load.spritesheet("player_block", "assets/sprites/hobbits/Block.png",{
             frameWidth: 192,
             frameHeight: 192 
         });
