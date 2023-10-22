@@ -60,7 +60,6 @@ class Scene2 extends Phaser.Scene {
     movePlayerManager() {
         let x = 0;
         let y = 0;
-        let r = 0;
         if(this.cursorKeys.left.isDown){
             x = -gameSettings.playerSpeed;
         }
@@ -84,9 +83,12 @@ class Scene2 extends Phaser.Scene {
                 this.player.isMoving = true;
             }
         } else {
-            this.player.isMoving = false;
-            this.player.stop("player_anim");
-            this.player.play("player_idle");
+            if (this.player.isMoving){
+                this.player.isMoving = false;
+                this.player.stop("player_anim");
+                this.player.play("player_idle");
+            }
+
         }
         this.player.setVelocity(x,y);
     }
