@@ -9,6 +9,10 @@ class Scene1 extends Phaser.Scene {
             frameWidth: 192,
             frameHeight: 192 
         });
+        this.load.spritesheet("player_idle", "assets/sprites/hobbits/Idle.png",{
+            frameWidth: 192,
+            frameHeight: 192 
+        });
         this.load.spritesheet("playerdie", "assets/sprites/hobbits/PlayerDeath.png",{
             frameWidth: 192,
             frameHeight: 192 

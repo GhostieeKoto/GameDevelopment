@@ -24,13 +24,19 @@ class Scene2 extends Phaser.Scene {
             repeat: -1
         });
         this.anims.create({
+            key: "player_idle",
+            frames: this.anims.generateFrameNumbers("player_idle"),
+            frameRate: 12,
+            repeat: -1
+        });
+        this.anims.create({
             key: "player_death",
             frames: this.anims.generateFrameNumbers("playerdie"),
             frameRate: 12,
             repeat: 0,
             hideOnComplete: true
         });
-      //  this.player.play("player_anim");
+        this.player.play("player_idle");
         this.player.setInteractive();
         this.cursorKeys = this.input.keyboard.createCursorKeys();
        // this.input.on('gameobjectdown', this.destroyPlayer, this);
@@ -54,6 +60,7 @@ class Scene2 extends Phaser.Scene {
     movePlayerManager() {
         let x = 0;
         let y = 0;
+        let r = 0;
         if(this.cursorKeys.left.isDown){
             x = -gameSettings.playerSpeed;
         }
@@ -78,7 +85,8 @@ class Scene2 extends Phaser.Scene {
             }
         } else {
             this.player.isMoving = false;
-            this.player.stop();
+            this.player.stop("player_anim");
+            this.player.play("player_idle");
         }
         this.player.setVelocity(x,y);
     }
