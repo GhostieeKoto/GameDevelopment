@@ -78,6 +78,9 @@ class Scene2 extends Phaser.Scene {
         if(this.cursorKeys.down.isDown){
             y = gameSettings.playerSpeed;
         }
+        if(this.cursorKeys.left.isDown && this.cursorKeys.right.isDown){
+            x = 0;
+        }
 
 
         if (x !== 0 || y !== 0){
