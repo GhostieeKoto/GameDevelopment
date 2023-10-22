@@ -13,7 +13,7 @@ class Scene2 extends Phaser.Scene {
         this.background.setOrigin(0,0);
         this.background.setScale(2);
         this.player = this.physics.add.sprite(16, 16, "player");
-        this.player.isMoving = true;
+        this.player.isMoving = false;
         this.player.setOrigin(0,0);
         this.player.setScale(1);
         this.player.setCollideWorldBounds(true);
@@ -36,16 +36,16 @@ class Scene2 extends Phaser.Scene {
        // this.input.on('gameobjectdown', this.destroyPlayer, this);
     }
 
-    moveplayer(player, speed){
-        this.tick++;
-        if (this.player.isMoving && this.tick%8===0){
-            player.x += speed;
-            if(player.x > config.width){
-                this.resetPlayerPos(player);
-            }
-        }
-
-    }
+    // moveplayer(player, speed){
+    //     this.tick++;
+    //     if (this.player.isMoving && this.tick%8===0){
+    //         player.x += speed;
+    //         if(player.x > config.width){
+    //             this.resetPlayerPos(player);
+    //         }
+    //     }
+    //
+    // }
     update() {
         this.background.tilePositionX = 0.5;
         this.movePlayerManager();
@@ -70,11 +70,13 @@ class Scene2 extends Phaser.Scene {
             y = gameSettings.playerSpeed;
         }
 
-        if(this.player.isMoving == true){
-            this.player.play("player_anim");
 
+        if (x > 0 || y > 0){
+            if (!this.player.isMoving){
+                this.player.play("player_anim");
+                this.player.isMoving = true;
+            }
         }
-
         this.player.setVelocity(x,y);
     }
 
