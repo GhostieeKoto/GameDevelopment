@@ -8,7 +8,6 @@ class Scene2 extends Phaser.Scene {
     tick = 0;
 
     create(){
-        this.cursorKeys = this.input.keyboard.createCursorKeys();
         this.add.text(20,20,"Playing game", {font: '25px Comic sans', fill: 'green' });
         this.background = this.add.tileSprite(0, 0, config.width, config.height, "background");
         this.background.setOrigin(0,0);
@@ -32,6 +31,7 @@ class Scene2 extends Phaser.Scene {
         });
       //  this.player.play("player_anim");
         this.player.setInteractive();
+        this.cursorKeys = this.input.keyboard.createCursorKeys();
        // this.input.on('gameobjectdown', this.destroyPlayer, this);
     }
 
