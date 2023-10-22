@@ -16,6 +16,7 @@ class Scene2 extends Phaser.Scene {
         this.player.isMoving = true;
         this.player.setOrigin(0,0);
         this.player.setScale(1);
+        this.player.setCollideWorldBounds(true);
         this.anims.create({
             key: "player_anim",
             frames: this.anims.generateFrameNumbers("player"),
@@ -56,6 +57,19 @@ class Scene2 extends Phaser.Scene {
             this.player.setVelocity(-gameSettings.playerSpeed, 0);
         }else if(this.cursorKeys.right.isDown){
             this.player.setVelocity(gameSettings.playerSpeed, 0);
+        }else if(this.cursorKeys.left.isUp){
+            this.player.setVelocity(0, 0);
+        }else if(this.cursorKeys.right.isUp){
+            this.player.setVelocity(0, 0);
+        }
+        if(this.cursorKeys.up.isDown){
+            this.player.setVelocity(0, gameSettings.playerSpeed);
+        }else if(this.cursorKeys.down.isDown){
+            this.player.setVelocity(0, gameSettings.playerSpeed);
+        }else if(this.cursorKeys.up.isUp){
+            this.player.setVelocity(0, 0);
+        }else if(this.cursorKeys.down.isUp){
+            this.player.setVelocity(0, 0);
         }
     }
 
