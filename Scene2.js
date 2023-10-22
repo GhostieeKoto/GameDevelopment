@@ -8,12 +8,11 @@ class Scene2 extends Phaser.Scene {
     tick = 0;
 
     create(){
-        this.player = this.physics.add.sprite(0, 0, "player");
         this.add.text(20,20,"Playing game", {font: '25px Comic sans', fill: 'green' });
         this.background = this.add.tileSprite(0, 0, config.width, config.height, "background");
         this.background.setOrigin(0,0);
         this.background.setScale(2);
-        this.player = this.add.sprite(0, 0, "player");
+        this.player = this.physics.add.sprite(16, 16, "player");
         this.player.isMoving = true;
         this.player.setOrigin(0,0);
         this.player.setScale(1);
