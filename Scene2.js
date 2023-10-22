@@ -38,7 +38,7 @@ class Scene2 extends Phaser.Scene {
 
     moveplayer(player, speed){
         this.tick++;
-        if (this.player.isMoving && this.tick%8==0){
+        if (this.player.isMoving && this.tick%8===0){
             player.x += speed;
             if(player.x > config.width){
                 this.resetPlayerPos(player);
@@ -53,24 +53,25 @@ class Scene2 extends Phaser.Scene {
     }
 
     movePlayerManager() {
+        let x = 0;
+        let y = 0;
         if(this.cursorKeys.left.isDown){
-            this.player.setVelocity(-gameSettings.playerSpeed, 0);
-        }else if(this.cursorKeys.right.isDown){
-            this.player.setVelocity(gameSettings.playerSpeed, 0);
-        }else if(this.cursorKeys.left.isUp){
-            this.player.setVelocity(0, 0);
-        }else if(this.cursorKeys.right.isUp){
-            this.player.setVelocity(0, 0);
+            x = -gameSettings.playerSpeed;
         }
+
+        if(this.cursorKeys.right.isDown){
+            x = gameSettings.playerSpeed;
+        }
+
         if(this.cursorKeys.up.isDown){
-            this.player.setVelocity(0, gameSettings.playerSpeed);
-        }else if(this.cursorKeys.down.isDown){
-            this.player.setVelocity(0, gameSettings.playerSpeed);
-        }else if(this.cursorKeys.up.isUp){
-            this.player.setVelocity(0, 0);
-        }else if(this.cursorKeys.down.isUp){
-            this.player.setVelocity(0, 0);
+            y = -gameSettings.playerSpeed;
         }
+
+        if(this.cursorKeys.down.isDown){
+            y = gameSettings.playerSpeed;
+        }
+
+        this.player.setVelocity(x,y);
     }
 
     destroyPlayer(pointer, gameObject){
