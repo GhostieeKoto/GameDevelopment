@@ -31,6 +31,7 @@ class Scene2 extends Phaser.Scene {
         });
       //  this.player.play("player_anim");
         this.player.setInteractive();
+        this.cursorKeys = this.input.keyboard.createCursorKeys();
        // this.input.on('gameobjectdown', this.destroyPlayer, this);
     }
 
