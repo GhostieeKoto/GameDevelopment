@@ -1,3 +1,7 @@
+var gameSettings = {
+    playerSpeed: 200,
+}
+
 var config = {
     width: 768,
     height: 432,

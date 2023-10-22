@@ -29,9 +29,9 @@ class Scene2 extends Phaser.Scene {
             repeat: 0,
             hideOnComplete: true
         });
-        this.player.play("player_anim");
+      //  this.player.play("player_anim");
         this.player.setInteractive();
-        this.input.on('gameobjectdown', this.destroyPlayer, this);
+       // this.input.on('gameobjectdown', this.destroyPlayer, this);
     }
 
 
@@ -49,11 +49,19 @@ class Scene2 extends Phaser.Scene {
     }
     update() {
         this.background.tilePositionX = 0.5;
-        this.movePlayer(this.player, 2.5);
-
-        
+        //this.movePlayer(this.player, 2.5);
+        this.movePlayerManager();
 
     }
+
+    movePlayerManager() {
+        if(this.cursorKeys.left.isDown){
+            this.player.setVelocityX(-gameSettings.playerSpeed);
+        }else if(this.cursorKeys.right.isDown){
+            this.player.setVelocityX(gameSettings.playerSpeed);
+        }
+    }
+
     destroyPlayer(pointer, gameObject){
         this.player.isMoving = false;
         gameObject.setTexture("playerdie");
