@@ -54,9 +54,9 @@ class Scene2 extends Phaser.Scene {
 
     movePlayerManager() {
         if(this.cursorKeys.left.isDown){
-            this.player.setVelocityX(-gameSettings.playerSpeed);
+            this.player.setVelocity(-gameSettings.playerSpeed, 0);
         }else if(this.cursorKeys.right.isDown){
-            this.player.setVelocityX(gameSettings.playerSpeed);
+            this.player.setVelocity(gameSettings.playerSpeed, 0);
         }
     }
 
