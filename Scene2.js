@@ -55,11 +55,14 @@ class Scene2 extends Phaser.Scene {
     update() {
         this.background.tilePositionX = 0.5;
         this.movePlayerManager();
+        
 
     }
     movePlayerManager() {
+
         let x = 0;
         let y = 0;
+
         if(this.cursorKeys.left.isDown){
             x = -gameSettings.playerSpeed;
         }
@@ -79,6 +82,12 @@ class Scene2 extends Phaser.Scene {
 
         if (x !== 0 || y !== 0){
             if (!this.player.isMoving){
+                if(x > 0){
+                    this.player.setFlipX(false);
+                }
+                if(x < 0){
+                    this.player.setFlipX(true);
+                }
                 this.player.play("player_anim");
                 this.player.isMoving = true;
             }
