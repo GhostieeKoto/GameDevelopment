@@ -71,11 +71,14 @@ class Scene2 extends Phaser.Scene {
         }
 
 
-        if (x > 0 || y > 0){
+        if (x !== 0 || y !== 0){
             if (!this.player.isMoving){
                 this.player.play("player_anim");
                 this.player.isMoving = true;
             }
+        } else {
+            this.player.isMoving = false;
+            this.player.stop();
         }
         this.player.setVelocity(x,y);
     }
