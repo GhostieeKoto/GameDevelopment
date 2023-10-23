@@ -29,6 +29,11 @@ class Scene1 extends Phaser.Scene {
             frameWidth: 192,
             frameHeight: 192 
         });
+        //We don't have a jump animation yet. I'll do that when I get home
+        this.load.spritesheet("player_jump", "assets/sprites/hobbits/Jump.png",{
+            frameWidth: 192,
+            frameHeight: 192 
+        });
     }
     create() {
         this.add.text(20, 20, "Loading game...", {font: '25px Arial', fill: 'red'});
