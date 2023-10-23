@@ -4,10 +4,10 @@ class Player  {
     player;
     input;
     
-    constructor(scene, input){
+    constructor(scene, input, reference){
         const x = 16;
         const y = 16;
-        this.player = scene.physics.add.sprite(x,y, 'player');
+        this.player = scene.physics.add.sprite(x,y, reference);
         this.player.setOrigin(0,0);
         this.player.setScale(1);
         this.player.setCollideWorldBounds(true);

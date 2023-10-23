@@ -50,7 +50,7 @@ class Scene2 extends Phaser.Scene {
             frameRate: 8,
             repeat: 0,
         });
-        this.player = new Player(this, this.input);
+        this.player = new Player(this, this.input, 'player');
 
         // this.cursorKeys = this.input.keyboard.createCursorKeys();
        // this.input.on('gameobjectdown', this.destroyPlayer, this);
