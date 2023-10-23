@@ -34,10 +34,18 @@ class Scene1 extends Phaser.Scene {
             frameWidth: 192,
             frameHeight: 192 
         });
-    }
+
+
+        this.load.image('sky', 'phaserTut/assets/sky.png');
+        this.load.image('ground', 'phaserTut/assets/platform.png');
+        this.load.image('star', 'phaserTut/assets/star.png');
+        this.load.image('bomb', 'phaserTut/assets/bomb.png');
+    
+            }
     create() {
         this.add.text(20, 20, "Loading game...", {font: '25px Arial', fill: 'red'});
         setTimeout( () => {this.scene.start("playGame")} , 1000);
+        
     }
 
 }
