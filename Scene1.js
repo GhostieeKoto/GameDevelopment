@@ -5,6 +5,10 @@ class Scene1 extends Phaser.Scene {
 
     preload() {
         this.load.image("background", "/assets/menu/Backgrounds/GrassyMountains/Grassy_Mountains_preview_fullcolor.png");
+        this.load.image('sky', '/assets/sky.png');
+        this.load.image('ground', '/assets/platform.png');
+        this.load.image('star', '/assets/star.png');
+        this.load.image('bomb', '/assets/bomb.png');
         this.load.spritesheet("player_run", "assets/sprites/hobbits/Run.png",{
             frameWidth: 192,
             frameHeight: 192 
@@ -36,10 +40,6 @@ class Scene1 extends Phaser.Scene {
         });
 
 
-        this.load.image('sky', 'phaserTut/assets/sky.png');
-        this.load.image('ground', 'phaserTut/assets/platform.png');
-        this.load.image('star', 'phaserTut/assets/star.png');
-        this.load.image('bomb', 'phaserTut/assets/bomb.png');
     
             }
     create() {

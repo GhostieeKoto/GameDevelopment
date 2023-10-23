@@ -8,20 +8,16 @@ class Scene2 extends Phaser.Scene {
     tick = 0;
 
     create(){
-    //  A simple background for our game
-    this.add.image(400, 300, 'sky');
+        let platforms;
     
     //  The platforms group contains the ground and the 2 ledges we can jump on
     platforms = this.physics.add.staticGroup();
     //  Here we create the ground.
     //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-    platforms.create(400, 568, 'ground').setScale(2).refreshBody();
-    platforms.create(600, 400, 'ground');
-    platforms.create(50, 250, 'ground');
-    platforms.create(750, 220, 'ground');
-    player = this.physics.add.sprite(100, 450, 'dude');
-    player.setBounce(0.2);
-    player.setCollideWorldBounds(true);
+    platforms.create(10, 10, 'ground').setScale(2).refreshBody();
+    platforms.create(10, 10, 'ground');
+    platforms.create(50, 50, 'ground');
+    platforms.create(100, 20, 'ground');
     //  Input Events
     cursors = this.input.keyboard.createCursorKeys();
     this.physics.add.collider(player, platforms);
