@@ -1,0 +1,97 @@
+{ "frames": {
+   "0": {
+    "frame": { "x": 1, "y": 1, "w": 13, "h": 14 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 17, "w": 11, "h": 12 },
+    "sourceSize": { "w": 48, "h": 48 },
+    "duration": 200
+   },
+   "1": {
+    "frame": { "x": 15, "y": 1, "w": 13, "h": 14 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 17, "w": 11, "h": 12 },
+    "sourceSize": { "w": 48, "h": 48 },
+    "duration": 200
+   },
+   "2": {
+    "frame": { "x": 29, "y": 1, "w": 13, "h": 14 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 17, "w": 11, "h": 12 },
+    "sourceSize": { "w": 48, "h": 48 },
+    "duration": 200
+   },
+   "3": {
+    "frame": { "x": 15, "y": 1, "w": 13, "h": 14 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 17, "w": 11, "h": 12 },
+    "sourceSize": { "w": 48, "h": 48 },
+    "duration": 200
+   },
+   "4": {
+    "frame": { "x": 1, "y": 16, "w": 13, "h": 14 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 17, "w": 11, "h": 12 },
+    "sourceSize": { "w": 48, "h": 48 },
+    "duration": 150
+   },
+   "5": {
+    "frame": { "x": 15, "y": 16, "w": 13, "h": 14 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 17, "w": 11, "h": 12 },
+    "sourceSize": { "w": 48, "h": 48 },
+    "duration": 150
+   },
+   "6": {
+    "frame": { "x": 29, "y": 16, "w": 13, "h": 14 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 17, "w": 11, "h": 12 },
+    "sourceSize": { "w": 48, "h": 48 },
+    "duration": 150
+   },
+   "7": {
+    "frame": { "x": 1, "y": 31, "w": 13, "h": 14 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 17, "w": 11, "h": 12 },
+    "sourceSize": { "w": 48, "h": 48 },
+    "duration": 150
+   },
+   "8": {
+    "frame": { "x": 15, "y": 31, "w": 13, "h": 14 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 17, "w": 11, "h": 12 },
+    "sourceSize": { "w": 48, "h": 48 },
+    "duration": 200
+   },
+   "9": {
+    "frame": { "x": 29, "y": 31, "w": 13, "h": 14 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 18, "y": 17, "w": 11, "h": 12 },
+    "sourceSize": { "w": 48, "h": 48 },
+    "duration": 200
+   }
+ },
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.2.30-x64",
+  "image": "zombie01.png",
+  "format": "RGBA8888",
+  "size": { "w": 42, "h": 45 },
+  "scale": "1",
+  "frameTags": [
+   { "name": "zombie01-idle-side", "from": 0, "to": 3, "direction": "forward" },
+   { "name": "zombie01-walk-side", "from": 4, "to": 7, "direction": "forward" },
+   { "name": "zombie01-hit-side", "from": 8, "to": 8, "direction": "forward" },
+   { "name": "zombie01-die-side", "from": 9, "to": 9, "direction": "forward" }
+  ]
+ }
+}

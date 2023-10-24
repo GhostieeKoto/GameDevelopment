@@ -1,0 +1,208 @@
+{ "frames": {
+   "0": {
+    "frame": { "x": 1, "y": 1, "w": 26, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 24, "h": 24 },
+    "sourceSize": { "w": 24, "h": 24 },
+    "duration": 75
+   },
+   "1": {
+    "frame": { "x": 28, "y": 1, "w": 26, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 24, "h": 24 },
+    "sourceSize": { "w": 24, "h": 24 },
+    "duration": 75
+   },
+   "2": {
+    "frame": { "x": 55, "y": 1, "w": 26, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 24, "h": 24 },
+    "sourceSize": { "w": 24, "h": 24 },
+    "duration": 75
+   },
+   "3": {
+    "frame": { "x": 1, "y": 28, "w": 26, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 24, "h": 24 },
+    "sourceSize": { "w": 24, "h": 24 },
+    "duration": 75
+   },
+   "4": {
+    "frame": { "x": 28, "y": 28, "w": 26, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 24, "h": 24 },
+    "sourceSize": { "w": 24, "h": 24 },
+    "duration": 75
+   },
+   "5": {
+    "frame": { "x": 55, "y": 28, "w": 26, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 24, "h": 24 },
+    "sourceSize": { "w": 24, "h": 24 },
+    "duration": 75
+   },
+   "6": {
+    "frame": { "x": 1, "y": 55, "w": 26, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 24, "h": 24 },
+    "sourceSize": { "w": 24, "h": 24 },
+    "duration": 75
+   },
+   "7": {
+    "frame": { "x": 28, "y": 55, "w": 26, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 24, "h": 24 },
+    "sourceSize": { "w": 24, "h": 24 },
+    "duration": 75
+   },
+   "8": {
+    "frame": { "x": 28, "y": 28, "w": 26, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 24, "h": 24 },
+    "sourceSize": { "w": 24, "h": 24 },
+    "duration": 75
+   },
+   "9": {
+    "frame": { "x": 1, "y": 28, "w": 26, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 24, "h": 24 },
+    "sourceSize": { "w": 24, "h": 24 },
+    "duration": 75
+   },
+   "10": {
+    "frame": { "x": 55, "y": 1, "w": 26, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 24, "h": 24 },
+    "sourceSize": { "w": 24, "h": 24 },
+    "duration": 75
+   },
+   "11": {
+    "frame": { "x": 28, "y": 1, "w": 26, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 24, "h": 24 },
+    "sourceSize": { "w": 24, "h": 24 },
+    "duration": 75
+   },
+   "12": {
+    "frame": { "x": 1, "y": 1, "w": 26, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 24, "h": 24 },
+    "sourceSize": { "w": 24, "h": 24 },
+    "duration": 75
+   },
+   "13": {
+    "frame": { "x": 28, "y": 55, "w": 26, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 24, "h": 24 },
+    "sourceSize": { "w": 24, "h": 24 },
+    "duration": 75
+   },
+   "14": {
+    "frame": { "x": 1, "y": 55, "w": 26, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 24, "h": 24 },
+    "sourceSize": { "w": 24, "h": 24 },
+    "duration": 75
+   },
+   "15": {
+    "frame": { "x": 55, "y": 28, "w": 26, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 24, "h": 24 },
+    "sourceSize": { "w": 24, "h": 24 },
+    "duration": 75
+   },
+   "16": {
+    "frame": { "x": 28, "y": 28, "w": 26, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 24, "h": 24 },
+    "sourceSize": { "w": 24, "h": 24 },
+    "duration": 75
+   },
+   "17": {
+    "frame": { "x": 55, "y": 28, "w": 26, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 24, "h": 24 },
+    "sourceSize": { "w": 24, "h": 24 },
+    "duration": 75
+   },
+   "18": {
+    "frame": { "x": 1, "y": 55, "w": 26, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 24, "h": 24 },
+    "sourceSize": { "w": 24, "h": 24 },
+    "duration": 75
+   },
+   "19": {
+    "frame": { "x": 28, "y": 55, "w": 26, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 24, "h": 24 },
+    "sourceSize": { "w": 24, "h": 24 },
+    "duration": 75
+   },
+   "20": {
+    "frame": { "x": 1, "y": 1, "w": 26, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 24, "h": 24 },
+    "sourceSize": { "w": 24, "h": 24 },
+    "duration": 75
+   },
+   "21": {
+    "frame": { "x": 28, "y": 1, "w": 26, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 24, "h": 24 },
+    "sourceSize": { "w": 24, "h": 24 },
+    "duration": 75
+   },
+   "22": {
+    "frame": { "x": 55, "y": 1, "w": 26, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 24, "h": 24 },
+    "sourceSize": { "w": 24, "h": 24 },
+    "duration": 75
+   },
+   "23": {
+    "frame": { "x": 1, "y": 28, "w": 26, "h": 26 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 24, "h": 24 },
+    "sourceSize": { "w": 24, "h": 24 },
+    "duration": 75
+   }
+ },
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.2.32-x64",
+  "image": "flying-knife.png",
+  "format": "RGBA8888",
+  "size": { "w": 81, "h": 81 },
+  "scale": "1",
+  "frameTags": [
+   { "name": "flying-knife-down", "from": 0, "to": 7, "direction": "forward" },
+   { "name": "flying-knife-side", "from": 8, "to": 15, "direction": "forward" },
+   { "name": "flying-knife-up", "from": 16, "to": 23, "direction": "forward" }
+  ]
+ }
+}

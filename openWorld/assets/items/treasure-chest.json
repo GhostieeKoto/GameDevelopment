@@ -1,0 +1,39 @@
+{ "frames": {
+   "0": {
+    "frame": { "x": 1, "y": 1, "w": 34, "h": 34 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 32 },
+    "sourceSize": { "w": 32, "h": 32 },
+    "duration": 300
+   },
+   "1": {
+    "frame": { "x": 36, "y": 1, "w": 34, "h": 34 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 32 },
+    "sourceSize": { "w": 32, "h": 32 },
+    "duration": 300
+   },
+   "2": {
+    "frame": { "x": 1, "y": 36, "w": 34, "h": 34 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 32 },
+    "sourceSize": { "w": 32, "h": 32 },
+    "duration": 300
+   }
+ },
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.2.32-x64",
+  "image": "treasure-chest.png",
+  "format": "RGBA8888",
+  "size": { "w": 70, "h": 70 },
+  "scale": "1",
+  "frameTags": [
+   { "name": "treasure-chest-idle", "from": 0, "to": 0, "direction": "forward" },
+   { "name": "treasure-chest-open", "from": 1, "to": 2, "direction": "forward" }
+  ]
+ }
+}
