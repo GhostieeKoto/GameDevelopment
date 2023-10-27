@@ -8,19 +8,7 @@ class Scene2 extends Phaser.Scene {
     tick = 0;
 
     create(){
-    
-    //  The platforms group contains the ground and the 2 ledges we can jump on
-    platforms = this.physics.add.staticGroup();
-    //  Here we create the ground.
-    //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-    platforms.create(10, 10, 'ground');
-    platforms.create(10, 10, 'ground');
-    platforms.create(50, 50, 'ground');
-    platforms.create(100, 20, 'ground');
-    //  Input Events
-    cursors = this.input.keyboard.createCursorKeys();
-    this.physics.add.collider(player, platforms);
-    
+        
         this.add.text(20,20,"Playing game", {font: '25px Comic sans', fill: 'green' });
         this.background = this.add.tileSprite(0, 0, config.width, config.height, "background");
         this.background.setOrigin(0,0);
