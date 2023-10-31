@@ -6,12 +6,12 @@ class Scene1 extends Phaser.Scene {
     preload() {
         this.load.image("background", "/assets/menu/Backgrounds/GrassyMountains/Grassy_Mountains_preview_fullcolor.png");
         this.load.image('sky', '/assets/sky.png');
-        this.load.image('ground', '/assets/platform.png');
+        this.load.image("ground", "/assets/platform.png");
         this.load.image('star', '/assets/star.png');
         this.load.image('bomb', '/assets/bomb.png');
         this.load.spritesheet("player_run", "assets/sprites/hobbits/Run.png",{
-            frameWidth: 192,
-            frameHeight: 192 
+            frameWidth: 55,
+            frameHeight: 54 
         });
         this.load.spritesheet("player_idle", "assets/sprites/hobbits/Idle.png",{
             frameWidth: 192,

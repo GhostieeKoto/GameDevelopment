@@ -15,7 +15,6 @@ class Player  {
         this.player.setInteractive();
         this.player.cursorKeys = input.keyboard.createCursorKeys();
         this.input = input;
-
     }
 
 
@@ -56,10 +55,12 @@ class Player  {
 
         if(this.player.cursorKeys.left.isDown || keyA.isDown){
             x = -gameSettings.playerSpeed;
+            this.player.play("left");
         }
 
         if(this.player.cursorKeys.right.isDown || keyD.isDown){
             x = gameSettings.playerSpeed;
+            this.player.play("right");
         }
 
         if(this.player.cursorKeys.up.isDown || keyW.isDown){
@@ -86,12 +87,12 @@ class Player  {
         if (x !== 0 || y !== 0){
             if (!this.isMoving){
                 if(x > 0){
-                    this.player.setFlipX(false);
+                    //this.player.setFlipX(false);
                 }
                 if(x < 0){
-                    this.player.setFlipX(true);
+                    //this.player.setFlipX(true);
                 }
-                this.player.play("player_run");
+                this.player.play("right");
                 this.isMoving = true;
             }
         } else {
