@@ -7,17 +7,23 @@ class Scene1 extends Phaser.Scene {
     score = 0;
     cursors;
     platforms;
+    gameStart;
     bombs;
+    sky;
     startGame;
     stars;
     player;
-    jp = 1000;
+    jp = 0;
     g = 500;
 
     create ()
     {
+        //alert("Game Started");
+        // Create the camera
+        this.cameras.main.setSize(window.innerWidth, window.innerHeight);
         //  A simple background for our game
-        this.add.image(400, 300, 'sky');
+        this.sky = this.add.tileSprite(200, 200, 400, 600, 'sky').setScale(1000);
+        //alert("Background Made");
 
         //  The platforms group contains the ground and the 2 ledges we can jump on
         this.platforms = this.physics.add.staticGroup();
@@ -25,22 +31,28 @@ class Scene1 extends Phaser.Scene {
 
         //  Here we create the ground.
         //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-        this.platforms.create(400, 450, 'ground').setScale(2).refreshBody();
-
-        // Create the game starter
-        this.startGame.create(800, 10, 'startGame');
+            this.platforms.create(0, 500, 'ground').setScale(100, 1).refreshBody();
+            this.startGame.create(800, 50, 'zone');
 
         //  Now let's create some ledges
-        this.platforms.create(600, 400, 'ground');
-        this.platforms.create(50, 250, 'ground');
-        this.platforms.create(750, 220, 'ground');
+        this.platforms.create(400, 400, 'ground').setScale(0.5, 1).refreshBody();
+        this.platforms.create(0, 250, 'ground');
+        this.platforms.create(800, 250, 'ground');
+        
+        // Lets create the menu
+
+
 
         // The player and its settings
         this.player = this.physics.add.sprite(100, 300, 'dude');
 
         //  Player physics properties. Give the little guy a slight bounce.
-        this.player.setBounce(0.2);
-        //this.player.setCollideWorldBounds(true, true, false, true);
+        this.player.setBounce(0.15);
+        this.player.setCollideWorldBounds(false);
+
+        // Start Camera Following
+        this.cameras.main.startFollow(this.player);
+        //alert("Camera Followed");
 
         //  Our player animations, turning, walking left and walking right.
         this.anims.create({
@@ -63,8 +75,17 @@ class Scene1 extends Phaser.Scene {
             repeat: -1
         });
 
+
         //  Input Events
+        //this.cameras.main.setBounds(-500, 0, window.innerWidth, window.innerHeight);
+        //this.cameras.main.setBounds(-5000, 0, 1000, 2000)
         this.cursors = this.input.keyboard.createCursorKeys();
+
+        this.cameras.main.startFollow(this.player, true);
+        this.cameras.main.followOffset.set(0, 0);
+
+        this.cameras.main.setDeadzone(200, 350);
+        this.cameras.main.setZoom(1);
 
         //  Some stars to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
         this.stars = this.physics.add.group({
@@ -76,19 +97,19 @@ class Scene1 extends Phaser.Scene {
         this.stars.children.iterate(child =>
         {
             //  Give each star a slightly different bounce
-            child.setBounceY(Phaser.Math.FloatBetween(0, 0));
+            child.setBounceY(Phaser.Math.FloatBetween(0, 0.5));
 
         });
 
         this.bombs = this.physics.add.group();
 
         //  The score
-        this.scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+        this.scoreText = this.add.text(this.cameras.x, 16, 'score: 0', { fontSize: '32px', fill: '#000' }).setScrollFactor(0);
 
         //  Collide the player and the stars with the platforms
         this.physics.add.collider(this.stars, this.platforms);
         this.physics.add.collider(this.player, this.platforms);
-        //this.physics.add.collider(this.stars, this.platforms);
+        this.physics.add.collider(this.player, this.startGame);
         this.physics.add.collider(this.bombs, this.platforms);
 
         //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
@@ -99,34 +120,51 @@ class Scene1 extends Phaser.Scene {
 
     update ()
     {
-        this.physics.world.gravity.y = 1000;
+        //this.platforms.create(this.player.x, 500, 'ground').setScale(1).refreshBody();
+        this.sky.tilePositionX += 1;
+        //this.bg.tilePositionY += 1.5;
+        const cam = this.cameras.main;
+
+        if (cam.deadzone)
+        {
+            this.moveCam
+        }
+        else if (cam._tb)
+        {
+            this.moveCam
+        }
+
+
+        this.physics.world.gravity.y = this.g;
         if (this.gameOver)
         {
-            return;
+            this.scene.start("bootGame");
+        }
+        if (this.player.y > 1080){
+            this.scene.start("bootGame");
         }
 
         if (this.cursors.left.isDown)
         {
-            this.player.setVelocityX(-160);
-
+            this.player.setVelocityX(-320);
             this.player.anims.play('left', true);
         }
         else if (this.cursors.right.isDown)
         {
-            this.player.setVelocityX(160);
-
+            this.player.setVelocityX(320);
             this.player.anims.play('right', true);
         }
         else
         {
             this.player.setVelocityX(0);
-
             this.player.anims.play('turn');
         }
 
-        if (this.cursors.up.isDown && this.player.body.touching.down)
+        if (this.cursors.up.isDown)
         {
+            if(this.player.body.touching.down){
             this.player.setVelocityY(this.jp*-1);
+            }
         }
     }
     gameStart (player, startGame)
@@ -144,17 +182,17 @@ class Scene1 extends Phaser.Scene {
         this.scoreText.setText(`Score: ${this.score}`);
 
         if(this.stars.countActive(true) === 11){
-            this.jp = 100;
+            this.jp = 200;
         }else if(this.stars.countActive(true) === 10){
             //this.g = 500;
-            this.jp = 500;
+            this.jp = 333;
         }else if(this.stars.countActive(true) === 9){
             //this.g = 10000;
-            this.jp = 1000;
+            this.jp = 350;
         }else if(this.stars.countActive(true) === 8){
-            this.jp = 2500;
+            this.jp = 350;
         }else if(this.stars.countActive(true) === 7){
-
+            this.g = 350;
         }
         
 
@@ -189,4 +227,7 @@ class Scene1 extends Phaser.Scene {
 
         this.gameOver = true;
     }
+
+
+
 }
