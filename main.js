@@ -23,9 +23,9 @@ let player;
 let cursors;
 
 function preload() {
-    this.load.image('sky', 'assets2/sky.png');
-    this.load.image('ground', 'assets2/platform.png');
-    this.load.image('star', 'assets2/star.png');
-    this.load.image('bomb', 'assets2/bomb.png');
-    this.load.spritesheet('dude', 'assets2/dude.png', { frameWidth: 32, frameHeight: 48 });
+    this.load.image('sky', 'assets/sky.png');
+    this.load.image('ground', 'assets/platform.png');
+    this.load.image('star', 'assets/star.png');
+    this.load.image('bomb', 'assets/bomb.png');
+    this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
 }

@@ -5,6 +5,8 @@
     scoreText;
     gameOver = false;
     score = 0;
+    iw = window.innerWidth;
+    ih = window.innerHeight;
     cursors;
     platforms;
     gameStart;
@@ -48,8 +50,8 @@
 
         //  Player physics properties. Give the little guy a slight bounce.
         this.player.setBounce(0.15);
-        this.player.setCollideWorldBounds(false);
-
+        this.player.setCollideWorldBounds(true);
+        
         // Start Camera Following
         this.cameras.main.startFollow(this.player);
         //alert("Camera Followed");
@@ -75,13 +77,14 @@
             repeat: -1
         });
 
-
+            //alert(1920);
+            //alert(1080);
         //  Input Events
         //this.cameras.main.setBounds(-500, 0, window.innerWidth, window.innerHeight);
-        //this.cameras.main.setBounds(-5000, 0, 1000, 2000)
+        this.cameras.main.startFollow(this.player, true);
+        this.cameras.main.setBounds(0, 0, (1920*1), 0);
         this.cursors = this.input.keyboard.createCursorKeys();
 
-        this.cameras.main.startFollow(this.player, true);
         this.cameras.main.followOffset.set(0, 0);
 
         this.cameras.main.setDeadzone(200, 350);
@@ -104,7 +107,7 @@
         this.bombs = this.physics.add.group();
 
         //  The score
-        this.scoreText = this.add.text(this.cameras.x, 16, 'score: 0', { fontSize: '32px', fill: '#000' }).setScrollFactor(0);
+        this.scoreText = this.add.text(this.cameras.x, 16, 'Score: 0', { fontSize: '32px', fill: '#000', fontFamily: 'cursive' }).setScrollFactor(0);
 
         //  Collide the player and the stars with the platforms
         this.physics.add.collider(this.stars, this.platforms);
@@ -219,13 +222,7 @@
 
     hitBomb (player, bomb)
     {
-        this.physics.pause();
-
-        player.setTint(0xff0000);
-
-        player.anims.play('turn');
-
-        this.gameOver = true;
+        location.reload();
     }
 
 
