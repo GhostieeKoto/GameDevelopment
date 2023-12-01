@@ -15,7 +15,7 @@
     startGame;
     stars;
     player;
-    jp = 0;
+    jp = 400;
     g = 500;
 
     create ()
@@ -37,9 +37,9 @@
             this.startGame.create(800, 50, 'zone');
 
         //  Now let's create some ledges
-        this.platforms.create(400, 400, 'ground').setScale(0.5, 1).refreshBody();
-        this.platforms.create(0, 250, 'ground');
-        this.platforms.create(800, 250, 'ground');
+        this.platforms.create((this.iw/2), 400, 'ground').setScale(0.5, 1).refreshBody();
+        this.platforms.create(((this.iw/2)-400), 250, 'ground');
+        this.platforms.create(((this.iw/2)+400), 250, 'ground');
         
         // Lets create the menu
 
@@ -77,12 +77,9 @@
             repeat: -1
         });
 
-            //alert(1920);
-            //alert(1080);
         //  Input Events
-        //this.cameras.main.setBounds(-500, 0, window.innerWidth, window.innerHeight);
         this.cameras.main.startFollow(this.player, true);
-        this.cameras.main.setBounds(0, 0, (1920*1), 0);
+        this.cameras.main.setBounds(0, 0, this.iw, 0);
         this.cursors = this.input.keyboard.createCursorKeys();
 
         this.cameras.main.followOffset.set(0, 0);
@@ -91,18 +88,18 @@
         this.cameras.main.setZoom(1);
 
         //  Some stars to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
-        this.stars = this.physics.add.group({
-            key: 'star',
-            repeat: 11,
-            setXY: { x: 12, y: 0, stepX: 70 }
-        });
+//        this.stars = this.physics.add.group({
+//            key: 'star',
+//            repeat: 11,
+//            setXY: { x: 600, y: 0, stepX: 70 }
+//        });
 
-        this.stars.children.iterate(child =>
-        {
+//        this.stars.children.iterate(child =>
+//        {
             //  Give each star a slightly different bounce
-            child.setBounceY(Phaser.Math.FloatBetween(0, 0.5));
+//            child.setBounceY(Phaser.Math.FloatBetween(0, 0.5));
 
-        });
+//        });
 
         this.bombs = this.physics.add.group();
 
@@ -110,13 +107,13 @@
         this.scoreText = this.add.text(this.cameras.x, 16, 'Score: 0', { fontSize: '32px', fill: '#000', fontFamily: 'cursive' }).setScrollFactor(0);
 
         //  Collide the player and the stars with the platforms
-        this.physics.add.collider(this.stars, this.platforms);
+//        this.physics.add.collider(this.stars, this.platforms);
         this.physics.add.collider(this.player, this.platforms);
         this.physics.add.collider(this.player, this.startGame);
         this.physics.add.collider(this.bombs, this.platforms);
 
         //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
-        this.physics.add.overlap(this.player, this.stars, this.collectStar, null, this);
+//        this.physics.add.overlap(this.player, this.stars, this.collectStar, null, this);
         this.physics.add.overlap(this.player, this.startGame, this.gameStart, null, this);
         this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
     }
