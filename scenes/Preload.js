@@ -14,7 +14,7 @@ class Preload extends Phaser.Scene {
     }
     create() {
         this.add.text(20, 20, "Game Failed", {font: '25px Arial', fill: 'red'});
-        this.scene.start("playGame");       
+        this.scene.start("mainMenu");       
     }
 
 }

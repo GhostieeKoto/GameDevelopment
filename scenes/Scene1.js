@@ -1,6 +1,6 @@
-    class Scene1 extends Phaser.Scene {
+class Scene1 extends Phaser.Scene {
     constructor() {
-        super("playGame");
+        super("mainMenu");
     }
     scoreText;
     gameOver = false;
@@ -9,7 +9,6 @@
     ih = window.innerHeight;
     cursors;
     platforms;
-    gameStart;
     bombs;
     sky;
     startGame;
@@ -33,7 +32,7 @@
         //  Here we create the ground.
         //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
             this.platforms.create(0, 500, 'ground').setScale(100, 1).refreshBody();
-            this.startGame.create(800, 50, 'zone');
+            this.startGame.create((this.iw/2)+500, 50, 'zone');
 
         //  Now let's create some ledges
         this.platforms.create((this.iw/2), 400, 'ground').setScale(0.5, 1).refreshBody();
@@ -108,12 +107,12 @@
         //  Collide the player and the stars with the platforms
 //        this.physics.add.collider(this.stars, this.platforms);
         this.physics.add.collider(this.player, this.platforms);
-        this.physics.add.collider(this.player, this.startGame);
+        //this.physics.add.collider(this.player, this.startGame);
         this.physics.add.collider(this.bombs, this.platforms);
 
         //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
 //        this.physics.add.overlap(this.player, this.stars, this.collectStar, null, this);
-        this.physics.add.overlap(this.player, this.startGame, this.gameStart, null, this);
+        this.physics.add.overlap(this.player, this.startGame, this.startGameCutscene, null, this);
         this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
     }
 
@@ -166,9 +165,11 @@
             }
         }
     }
-    gameStart (player, startGame)
+    startGameCutscene(player, gameStart)
     {
-        startGame.setAlpha(0);
+        playerx = this.player.x;
+        playery = this.player.y;
+        this.scene.start("GameStartCutscene");       
     }
 
 

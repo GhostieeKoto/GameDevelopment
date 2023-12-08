@@ -6,7 +6,7 @@ var config = {
     width: window.innerWidth,
     height: window.innerHeight,
     backgroundColor: 0x000000,
-    scene: [Preload, Scene1],
+    scene: [Preload, Scene1, Scene2],
     pixelArt: true,
     physics: {
         default: "arcade",
@@ -21,6 +21,8 @@ let platforms;
 let StartGame;
 let player;
 let cursors;
+let playerx;
+let playery;
 
 function preload() {
     this.load.image('sky', 'assets/sky.png');
