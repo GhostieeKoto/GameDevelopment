@@ -17,7 +17,6 @@
     player;
     jp = 400;
     g = 500;
-
     create ()
     {
         //alert("Game Started");
