@@ -87,6 +87,7 @@ class Scene2 extends Phaser.Scene {
 //        this.physics.add.overlap(this.player, this.stars, this.collectStar, null, this);
         this.physics.add.overlap(this.player, this.startGame, this.startGameCutscene, null, this);
         this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
+        this.startGameCutscene();
     }
 
     update ()
@@ -127,20 +128,23 @@ class Scene2 extends Phaser.Scene {
         }
         else
         {
-            this.player.setVelocityX(0);
+            //this.player.setVelocityX(0);
             this.player.anims.play('turn');
         }
 
         if (this.cursors.up.isDown)
         {
             if(this.player.body.touching.down){
-            this.player.setVelocityY(this.jp*-1);
+            //this.player.setVelocityY(this.jp*-1);
             }
         }
     }
     startGameCutscene(player, gameStart)
     {
-        this.scene.start("gameCutscene");
+        this.player.anims.play('right');
+        this.player.setVelocityX(100);
+
+
     }
 
 
