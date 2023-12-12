@@ -3,23 +3,26 @@ var gameSettings = {
 }
 
 var config = {
-    width: 768,
-    height: 432,
+    width: window.innerWidth,
+    height: window.innerHeight,
     backgroundColor: 0x000000,
-    scene: [Scene1, Scene2],
+    scene: [Preload, MainMenu, GameStartCutscene, WorldOneLevelOne],
     pixelArt: true,
     physics: {
         default: "arcade",
         arcade:{
-            debug: true,
-            gravity: { y: 0}
+            debug: false,
+            gravity: { y: 500}
         },
     }
 }
 var game = new Phaser.Game(config);
 let platforms;
+let StartGame;
 let player;
 let cursors;
+let playerx;
+let playery;
 
 function preload() {
     this.load.image('sky', 'assets/sky.png');
