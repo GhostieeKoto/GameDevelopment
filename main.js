@@ -6,7 +6,7 @@ var config = {
     width: window.innerWidth,
     height: window.innerHeight,
     backgroundColor: 0x000000,
-    scene: [Preload, Scene1, Scene2],
+    scene: [Preload, MainMenu, GameStartCutscene, WorldOneLevelOne],
     pixelArt: true,
     physics: {
         default: "arcade",

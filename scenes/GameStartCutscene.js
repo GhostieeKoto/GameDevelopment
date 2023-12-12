@@ -1,4 +1,4 @@
-class Scene2 extends Phaser.Scene {
+class GameStartCutscene extends Phaser.Scene {
     constructor() {
         super("GameStartCutscene");
     }
@@ -16,6 +16,7 @@ class Scene2 extends Phaser.Scene {
     player;
     jp = 400;
     g = 500;
+    cutscene;
     create ()
     {
         console.log(playerx + ", " + playery);
@@ -34,8 +35,8 @@ class Scene2 extends Phaser.Scene {
 
         //  Now let's create some ledges
         this.platforms.create((this.iw/2), 400, 'ground').setScale(0.5, 1).refreshBody();
-        this.platforms.create(((this.iw/2)-400), 250, 'ground');
-        this.platforms.create(((this.iw/2)+400), 250, 'ground');
+        this.platforms.create(((this.iw/2)-800), 250, 'ground').setScale(3, 1).refreshBody();
+        this.platforms.create(((this.iw/2)+800), 250, 'ground').setScale(3, 1).refreshBody();
         
         // The player and its settings
         this.player = this.physics.add.sprite(playerx, playery, 'dude');
@@ -50,12 +51,12 @@ class Scene2 extends Phaser.Scene {
 
         //  Input Events
         this.cameras.main.startFollow(this.player, true);
-        this.cameras.main.setBounds(0, 0, this.iw, 0);
+        this.cameras.main.setBounds(0, 0, 0, 0);
         this.cursors = this.input.keyboard.createCursorKeys();
 
         this.cameras.main.followOffset.set(0, 0);
 
-        this.cameras.main.setDeadzone(200, 350);
+        this.cameras.main.setDeadzone(1500, 1350);
         this.cameras.main.setZoom(1);
 
         //  Some stars to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
@@ -96,6 +97,13 @@ class Scene2 extends Phaser.Scene {
         this.sky.tilePositionX += 1;
         //this.bg.tilePositionY += 1.5;
         const cam = this.cameras.main;
+        
+        if(this.cutscene){
+            if(this.player.x > this.iw){
+                this.scene.start("WorldOneLevelOne");
+                };
+        }
+
 
         if (cam.deadzone)
         {
@@ -115,35 +123,16 @@ class Scene2 extends Phaser.Scene {
         if (this.player.y > 1080){
             this.scene.start("bootGame");
         }
-
-        if (this.cursors.left.isDown)
-        {
-            //this.player.setVelocityX(-320);
-            //this.player.anims.play('left', true);
-        }
-        else if (this.cursors.right.isDown)
-        {
-            //this.player.setVelocityX(320);
-            //this.player.anims.play('right', true);
-        }
-        else
-        {
-            //this.player.setVelocityX(0);
-            this.player.anims.play('turn');
-        }
-
-        if (this.cursors.up.isDown)
-        {
-            if(this.player.body.touching.down){
-            //this.player.setVelocityY(this.jp*-1);
-            }
-        }
     }
     startGameCutscene(player, gameStart)
     {
-        this.player.anims.play('right');
-        this.player.setVelocityX(100);
-
+        this.player.anims.play('right', true);
+        this.player.setVelocityX(320);
+        //this.player.setVelocityY(this.jp*-1);
+        console.log(1);
+        this.cutscene = true;
+        console.log(0);
+        //this.scene.start("mainMenu");
 
     }
 

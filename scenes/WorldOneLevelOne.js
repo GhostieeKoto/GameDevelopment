@@ -1,6 +1,6 @@
-class Scene1 extends Phaser.Scene {
+class WorldOneLevelOne extends Phaser.Scene {
     constructor() {
-        super("mainMenu");
+        super("WorldOneLevelOne");
     }
     scoreText;
     gameOver = false;
@@ -31,24 +31,22 @@ class Scene1 extends Phaser.Scene {
 
         //  Here we create the ground.
         //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-            this.platforms.create(0, 500, 'ground').setScale(100, 1).refreshBody();
-            this.startGame.create((this.iw/2)+500, 50, 'zone');
+            this.platforms.create(0, 500, 'ground').setScale(1000, 1).refreshBody();
+            //this.startGame.create((this.iw/2)+500, 50, 'zone');
 
         //  Now let's create some ledges
-        this.platforms.create((this.iw/2), 400, 'ground').setScale(0.5, 1).refreshBody();
-        this.platforms.create(((this.iw/2)-400), 250, 'ground');
-        this.platforms.create(((this.iw/2)+400), 250, 'ground');
+        //this.platforms.create((this.iw/2), 400, 'ground').setScale(0.5, 1).refreshBody();
         
         // Lets create the menu
 
 
 
         // The player and its settings
-        this.player = this.physics.add.sprite(100, 300, 'dude');
+        this.player = this.physics.add.sprite(100, 450, 'dude');
 
         //  Player physics properties. Give the little guy a slight bounce.
         this.player.setBounce(0.15);
-        this.player.setCollideWorldBounds(true);
+        this.player.setCollideWorldBounds(false);
         
         // Start Camera Following
         this.cameras.main.startFollow(this.player);
@@ -77,7 +75,7 @@ class Scene1 extends Phaser.Scene {
 
         //  Input Events
         this.cameras.main.startFollow(this.player, true);
-        this.cameras.main.setBounds(0, 0, this.iw, 0);
+        this.cameras.main.setBounds(0, 0, 999999999, 0);
         this.cursors = this.input.keyboard.createCursorKeys();
 
         this.cameras.main.followOffset.set(0, 0);
