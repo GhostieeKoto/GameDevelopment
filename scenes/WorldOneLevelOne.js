@@ -35,7 +35,7 @@ class WorldOneLevelOne extends Phaser.Scene {
             //this.startGame.create((this.iw/2)+500, 50, 'zone');
 
         //  Now let's create some ledges
-        //this.platforms.create((this.iw/2), 400, 'ground').setScale(0.5, 1).refreshBody();
+        this.platforms.create((this.iw/2), 400, 'ground').setScale(0.5, 1).refreshBody();
         
         // Lets create the menu
 

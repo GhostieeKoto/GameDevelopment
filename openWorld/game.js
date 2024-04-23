@@ -1,8 +1,8 @@
-const gameSettings = {
+var gameSettings = {
     playerSpeed: 200,
 }
 
-const config = {
+var config = {
     width: 800,
     height: 500,
     backgroundColor: 0x000000,
