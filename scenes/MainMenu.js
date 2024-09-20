@@ -14,7 +14,7 @@ class MainMenu extends Phaser.Scene {
     startGame;
     stars;
     player;
-    jp = 400;
+    jp = 350;
     g = 500;
     create ()
     {
@@ -32,12 +32,12 @@ class MainMenu extends Phaser.Scene {
         //  Here we create the ground.
         //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
             this.platforms.create(0, 500, 'ground').setScale(100, 1).refreshBody();
-            this.startGame.create((this.iw/2)+500, 50, 'zone');
+            this.startGame.create((this.iw/2)+500, 100, 'zone');
 
         //  Now let's create some ledges
         this.platforms.create((this.iw/2), 400, 'ground').setScale(0.5, 1).refreshBody();
-        this.platforms.create(((this.iw/2)-800), 250, 'ground').setScale(3, 1).refreshBody();
-        this.platforms.create(((this.iw/2)+800), 250, 'ground').setScale(3, 1).refreshBody();
+        this.platforms.create(((this.iw/2)-800), 300, 'ground').setScale(3, 1).refreshBody();
+        this.platforms.create(((this.iw/2)+800), 300, 'ground').setScale(3, 1).refreshBody();
         
         // Lets create the menu
 

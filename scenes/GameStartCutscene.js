@@ -35,8 +35,8 @@ class GameStartCutscene extends Phaser.Scene {
 
         //  Now let's create some ledges
         this.platforms.create((this.iw/2), 400, 'ground').setScale(0.5, 1).refreshBody();
-        this.platforms.create(((this.iw/2)-800), 250, 'ground').setScale(3, 1).refreshBody();
-        this.platforms.create(((this.iw/2)+800), 250, 'ground').setScale(3, 1).refreshBody();
+        this.platforms.create(((this.iw/2)-800), 300, 'ground').setScale(3, 1).refreshBody();
+        this.platforms.create(((this.iw/2)+800), 300, 'ground').setScale(3, 1).refreshBody();
         
         // The player and its settings
         this.player = this.physics.add.sprite(playerx, playery, 'dude');

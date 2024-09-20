@@ -12,9 +12,10 @@ class WorldOneLevelOne extends Phaser.Scene {
     bombs;
     sky;
     startGame;
+    inCutscene = true;
     stars;
     player;
-    jp = 400;
+    jp = 350;
     g = 500;
     create ()
     {
@@ -35,24 +36,9 @@ class WorldOneLevelOne extends Phaser.Scene {
             //this.startGame.create((this.iw/2)+500, 50, 'zone');
 
         //  Now let's create some ledges
-        this.platforms.create((this.iw/2), 400, 'ground').setScale(0.5, 1).refreshBody();
+        this.platforms.create((this.iw/2), 400, 'ground').setScale(0.25, 1).refreshBody();
         
-        // Lets create the menu
-
-
-
-        // The player and its settings
-        this.player = this.physics.add.sprite(100, 450, 'dude');
-
-        //  Player physics properties. Give the little guy a slight bounce.
-        this.player.setBounce(0.15);
-        this.player.setCollideWorldBounds(false);
-        
-        // Start Camera Following
-        this.cameras.main.startFollow(this.player);
-        //alert("Camera Followed");
-
-        //  Our player animations, turning, walking left and walking right.
+ //  Our player animations, turning, walking left and walking right.
         this.anims.create({
             key: 'left',
             frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
@@ -72,6 +58,20 @@ class WorldOneLevelOne extends Phaser.Scene {
             frameRate: 10,
             repeat: -1
         });
+
+
+        // The player and its settings
+        this.player = this.physics.add.sprite(0, 450, 'dude');
+
+        //  Player physics properties. Give the little guy a slight bounce.
+        this.player.setBounce(0.15);
+        this.player.setCollideWorldBounds(false);
+        
+        // Start Camera Following
+        this.cameras.main.startFollow(this.player);
+        //alert("Camera Followed");
+
+        
 
         //  Input Events
         this.cameras.main.startFollow(this.player, true);
@@ -116,6 +116,14 @@ class WorldOneLevelOne extends Phaser.Scene {
 
     update ()
     {
+        if(this.player.x < 100 && this.inCutscene){
+            this.player.anims.play('right', true);
+            this.player.setVelocityX(320);
+        }else{
+        this.player.setVelocityX(0);
+        this.inCutscene = false;
+        this.player.setCollideWorldBounds(true);
+        
         //this.platforms.create(this.player.x, 500, 'ground').setScale(1).refreshBody();
         this.sky.tilePositionX += 1;
         //this.bg.tilePositionY += 1.5;
@@ -163,13 +171,7 @@ class WorldOneLevelOne extends Phaser.Scene {
             }
         }
     }
-    startGameCutscene(player, gameStart)
-    {
-        playerx = this.player.x;
-        playery = this.player.y;
-        this.scene.start("GameStartCutscene");       
-    }
-
+}
 
     collectStar (player, star)
     {
