@@ -9,6 +9,7 @@ class WorldOneLevelOne extends Phaser.Scene {
     ih = window.innerHeight;
     cursors;
     platforms;
+    luckyblocks;
     bombs;
     sky;
     startGame;
@@ -28,6 +29,7 @@ class WorldOneLevelOne extends Phaser.Scene {
 
         //  The platforms group contains the ground and the 2 ledges we can jump on
         this.platforms = this.physics.add.staticGroup();
+        this.luckyblocks = this.physics.add.staticGroup();
         this.startGame = this.physics.add.staticGroup();
 
         //  Here we create the ground.
@@ -36,29 +38,9 @@ class WorldOneLevelOne extends Phaser.Scene {
             //this.startGame.create((this.iw/2)+500, 50, 'zone');
 
         //  Now let's create some ledges
-        this.platforms.create((this.iw/2), 400, 'ground').setScale(0.25, 1).refreshBody();
-        
- //  Our player animations, turning, walking left and walking right.
-        this.anims.create({
-            key: 'left',
-            frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
-            frameRate: 10,
-            repeat: -1
-        });
-
-        this.anims.create({
-            key: 'turn',
-            frames: [ { key: 'dude', frame: 4 } ],
-            frameRate: 20
-        });
-
-        this.anims.create({
-            key: 'right',
-            frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
-            frameRate: 10,
-            repeat: -1
-        });
-
+        this.platforms.create((this.iw/2-256), 400, 'ground').setScale(1, 1).refreshBody();
+        this.luckyblocks.create((this.iw/2-224), 400, 'block');
+        this.platforms.create((this.iw/2-128), 400, 'ground').setScale(1, 1).refreshBody();
 
         // The player and its settings
         this.player = this.physics.add.sprite(0, 450, 'dude');
