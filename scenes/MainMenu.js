@@ -74,6 +74,12 @@ class MainMenu extends Phaser.Scene {
             frameRate: 10,
             repeat: -1
         });
+        this.anims.create({
+            key: 'lbup',
+            frames: this.anims.generateFrameNumbers('lbhit', { start: 0, end: 3 }),
+            frameRate: 10,
+            repeat: 0
+        });
 
         //  Input Events
         this.cameras.main.startFollow(this.player, true);

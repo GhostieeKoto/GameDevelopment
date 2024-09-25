@@ -16,6 +16,7 @@ class WorldOneLevelOne extends Phaser.Scene {
     inCutscene = true;
     stars;
     player;
+    lby;
     jp = 350;
     g = 500;
     create ()
@@ -39,7 +40,8 @@ class WorldOneLevelOne extends Phaser.Scene {
 
         //  Now let's create some ledges
         this.platforms.create((this.iw/2-256), 400, 'ground').setScale(1, 1).refreshBody();
-        this.luckyblocks.create((this.iw/2-224), 400, 'block');
+        this.lb1 = this.luckyblocks.create((this.iw/2-224), 400, 'block');
+        this.lb1.anims.pl
         this.platforms.create((this.iw/2-128), 400, 'ground').setScale(1, 1).refreshBody();
 
         // The player and its settings
@@ -87,12 +89,13 @@ class WorldOneLevelOne extends Phaser.Scene {
         //  Collide the player and the stars with the platforms
 //        this.physics.add.collider(this.stars, this.platforms);
         this.physics.add.collider(this.player, this.platforms);
-        //this.physics.add.collider(this.player, this.startGame);
+        this.physics.add.overlap(this.player, this.luckyblocks, this.hitLuckyBlock, null, this);
+        this.physics.add.collider(this.player, this.luckyblocks);
         this.physics.add.collider(this.bombs, this.platforms);
 
         //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
 //        this.physics.add.overlap(this.player, this.stars, this.collectStar, null, this);
-        this.physics.add.overlap(this.player, this.startGame, this.startGameCutscene, null, this);
+        //this.physics.add.overlap(this.player, this.startGame, this.startGameCutscene, null, this);
         this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
     }
 
@@ -154,6 +157,13 @@ class WorldOneLevelOne extends Phaser.Scene {
         }
     }
 }
+
+    hitLuckyBlock() {
+        this.lby = 0;
+        console.log("Hit Lucky Block!!");
+        this.lb1.anims.playReverse('lbup', true);
+    }
+
 
     collectStar (player, star)
     {
