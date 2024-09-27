@@ -1,3 +1,4 @@
+
 class Preload extends Phaser.Scene {
     constructor() {
         super("bootGame");
@@ -13,6 +14,7 @@ class Preload extends Phaser.Scene {
         this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 42 });
         this.load.spritesheet('lbhit', 'assets/luckyblockwhite.png', { frameWidth: 32, frameHeight: 64 });
         this.moveCam = false;
+        console.log(Phaser.VERSION);
     }
     create() {
         this.add.text(20, 20, "Game Failed", {font: '25px Arial', fill: 'red'});

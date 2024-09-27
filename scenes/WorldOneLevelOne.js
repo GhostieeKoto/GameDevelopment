@@ -9,6 +9,7 @@ class WorldOneLevelOne extends Phaser.Scene {
     ih = window.innerHeight;
     cursors;
     platforms;
+    ground;
     luckyblocks;
     bombs;
     sky;
@@ -17,6 +18,8 @@ class WorldOneLevelOne extends Phaser.Scene {
     stars;
     player;
     lby;
+    PlayerCollides;
+    luckyBlockUsed = false;
     jp = 350;
     g = 500;
     create ()
@@ -35,18 +38,24 @@ class WorldOneLevelOne extends Phaser.Scene {
 
         //  Here we create the ground.
         //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-            this.platforms.create(0, 500, 'ground').setScale(1000, 1).refreshBody();
+         this.ground = this.platforms.create(0, 500, 'ground').setScale(1000, 1).refreshBody();
+         this.ground.name = 'ground';
             //this.startGame.create((this.iw/2)+500, 50, 'zone');
 
         //  Now let's create some ledges
-        this.platforms.create((this.iw/2-256), 400, 'ground').setScale(1, 1).refreshBody();
-        this.lb1 = this.luckyblocks.create((this.iw/2-224), 400, 'block');
-        this.lb1.anims.pl
-        this.platforms.create((this.iw/2-128), 400, 'ground').setScale(1, 1).refreshBody();
+        this.platforms.create((this.iw/2-256), 400, 'ground').setScale(1, 1).refreshBody().name = "ground";
+        this.lb1 = this.luckyblocks.create((this.iw/2-224), 400, 'block').name = "LuckyBlock1";
+        this.platforms.create((this.iw/2-128), 400, 'ground').setScale(1, 1).refreshBody().name = "ground";
 
         // The player and its settings
         this.player = this.physics.add.sprite(0, 450, 'dude');
-
+        this.player.name = 'player'
+        this.player.body.onCollide = true;
+        this.lb1.body.onCollide = true;
+        this.physics.world.on('collide', (gameObject1, gameObject2, body1, body2) =>
+            {
+                console.log(gameObject2.name);
+            });
         //  Player physics properties. Give the little guy a slight bounce.
         this.player.setBounce(0.15);
         this.player.setCollideWorldBounds(false);
@@ -55,7 +64,8 @@ class WorldOneLevelOne extends Phaser.Scene {
         this.cameras.main.startFollow(this.player);
         //alert("Camera Followed");
 
-        
+        // Lucky Block Stuff
+        this.lb1.on('animationcomplete', this.ResetLB, this);
 
         //  Input Events
         this.cameras.main.startFollow(this.player, true);
@@ -101,6 +111,7 @@ class WorldOneLevelOne extends Phaser.Scene {
 
     update ()
     {
+
         if(this.player.x < 100 && this.inCutscene){
             this.player.anims.play('right', true);
             this.player.setVelocityX(320);
@@ -160,8 +171,23 @@ class WorldOneLevelOne extends Phaser.Scene {
 
     hitLuckyBlock() {
         this.lby = 0;
+        console.log();
         console.log("Hit Lucky Block!!");
-        this.lb1.anims.playReverse('lbup', true);
+         /*this.tweens.add({
+            targets: gameObject2.name,
+            props: {
+                x: { value: '+=500', duration: 3000, ease: 'Power2' },
+                y: { value: '+=300', duration: 1500, ease: 'Bounce.easeOut' }
+            },
+            delay: 1000
+        });*/
+        
+//        this.lb1.anims.play('lbup', true);
+//        this.lb1.y -= 4;
+    }
+    ResetLB() {
+//        this.lb1.y += 4;
+
     }
 
 
