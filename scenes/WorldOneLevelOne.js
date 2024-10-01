@@ -11,6 +11,7 @@ class WorldOneLevelOne extends Phaser.Scene {
     platforms;
     ground;
     luckyblocks;
+    lbname;
     bombs;
     sky;
     startGame;
@@ -49,12 +50,14 @@ class WorldOneLevelOne extends Phaser.Scene {
 
         // The player and its settings
         this.player = this.physics.add.sprite(0, 450, 'dude');
-        this.player.name = 'player'
+        this.player.name = 'player';
         this.player.body.onCollide = true;
-        this.lb1.body.onCollide = true;
         this.physics.world.on('collide', (gameObject1, gameObject2, body1, body2) =>
             {
                 console.log(gameObject2.name);
+                if(gameObject2.name.includes("LuckyBlock")){
+                    this.lbname = gameObject2.name;
+                }
             });
         //  Player physics properties. Give the little guy a slight bounce.
         this.player.setBounce(0.15);
@@ -65,7 +68,7 @@ class WorldOneLevelOne extends Phaser.Scene {
         //alert("Camera Followed");
 
         // Lucky Block Stuff
-        this.lb1.on('animationcomplete', this.ResetLB, this);
+        //this.lb1.on('animationcomplete', this.ResetLB, this);
 
         //  Input Events
         this.cameras.main.startFollow(this.player, true);
@@ -173,15 +176,15 @@ class WorldOneLevelOne extends Phaser.Scene {
         this.lby = 0;
         console.log();
         console.log("Hit Lucky Block!!");
-         /*this.tweens.add({
-            targets: gameObject2.name,
+         this.tweens.add({
+            targets: this.lbname,
             props: {
                 x: { value: '+=500', duration: 3000, ease: 'Power2' },
                 y: { value: '+=300', duration: 1500, ease: 'Bounce.easeOut' }
             },
             delay: 1000
-        });*/
-        
+        });
+    
 //        this.lb1.anims.play('lbup', true);
 //        this.lb1.y -= 4;
     }
