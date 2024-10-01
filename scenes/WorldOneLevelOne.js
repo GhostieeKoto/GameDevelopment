@@ -174,7 +174,6 @@ class WorldOneLevelOne extends Phaser.Scene {
 
     hitLuckyBlock() {
         this.lby = 0;
-        console.log();
         console.log("Hit Lucky Block!!");
          this.tweens.add({
             targets: this.lbname,
