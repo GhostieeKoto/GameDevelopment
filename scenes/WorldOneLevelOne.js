@@ -21,6 +21,7 @@ class WorldOneLevelOne extends Phaser.Scene {
     lby;
     PlayerCollides;
     lb1used = false;
+    doublejump = false;
     jp = 350;
     g = 500;
     create ()
@@ -143,6 +144,9 @@ class WorldOneLevelOne extends Phaser.Scene {
 
     update ()
     {
+        if(this.player.body.touching.down){
+            this.doublejump = false;
+        }
         if(this.player.x < 100 && this.inCutscene){
             this.player.anims.play('right', true);
             this.player.setVelocityX(320);
@@ -193,6 +197,11 @@ class WorldOneLevelOne extends Phaser.Scene {
 
         if (this.cursors.up.isDown)
         {
+            if(!this.doublejump){
+            if(!this.player.body.touching.down){
+            this.player.setVelocityY(this.jp*-1);
+            this.doublejump = true;
+            }
             if(this.player.body.touching.down){
             this.player.setVelocityY(this.jp*-1);
             }
