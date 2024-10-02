@@ -219,7 +219,6 @@ class WorldOneLevelOne extends Phaser.Scene {
         //  Add and update the score
         this.score += 1;
         this.scoreText.setText(`Score: ${this.score}`);
-        }
     }
 
     hitBomb (player, bomb)
