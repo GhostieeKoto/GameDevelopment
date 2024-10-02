@@ -136,7 +136,7 @@ class WorldOneLevelOne extends Phaser.Scene {
         this.physics.add.collider(this.bombs, this.platforms);
 
         //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
-//        this.physics.add.overlap(this.player, this.stars, this.collectStar, null, this);
+        this.physics.add.overlap(this.player, this.stars, this.collectStar, null, this);
         //this.physics.add.overlap(this.player, this.startGame, this.startGameCutscene, null, this);
         this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
     }
