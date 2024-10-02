@@ -200,9 +200,9 @@ class WorldOneLevelOne extends Phaser.Scene {
     }
 }
     hitLuckyBlock() {
-        console.log(this.lb1used);
+        //console.log(this.lb1used);
         this.lby = 0;
-        console.log("Hit Lucky Block!!");
+        //console.log("Hit Lucky Block!!");
         if(!this.lb1used){
         this.lb1.anims.play('lbup');
         this.lb1star.body.setAllowGravity(true);
