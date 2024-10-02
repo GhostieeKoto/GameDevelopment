@@ -217,42 +217,8 @@ class WorldOneLevelOne extends Phaser.Scene {
         star.disableBody(true, true);
 
         //  Add and update the score
-        this.score += 10;
+        this.score += 1;
         this.scoreText.setText(`Score: ${this.score}`);
-
-        if(this.stars.countActive(true) === 11){
-            this.jp = 200;
-        }else if(this.stars.countActive(true) === 10){
-            //this.g = 500;
-            this.jp = 333;
-        }else if(this.stars.countActive(true) === 9){
-            //this.g = 10000;
-            this.jp = 350;
-        }else if(this.stars.countActive(true) === 8){
-            this.jp = 350;
-        }else if(this.stars.countActive(true) === 7){
-            this.g = 350;
-        }
-        
-
-
-        if (this.stars.countActive(true) === 0)
-        {
-            //  A new batch of stars to collect
-            this.stars.children.iterate(child =>
-            {
-
-                child.enableBody(true, child.x, 0, true, true);
-
-            });
-
-            const x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
-
-            const bomb = this.bombs.create(x, 16, 'bomb');
-            bomb.setBounce(1);
-            bomb.setCollideWorldBounds(true);
-            bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
-
         }
     }
 
