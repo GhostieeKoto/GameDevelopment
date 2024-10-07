@@ -21,7 +21,7 @@ class WorldOneLevelOne extends Phaser.Scene {
     lby;
     PlayerCollides;
     lb1used = false;
-    doublejump = false;
+    doublejump = true;
     jp = 350;
     g = 500;
     create ()
@@ -37,7 +37,9 @@ class WorldOneLevelOne extends Phaser.Scene {
         this.platforms = this.physics.add.staticGroup();
         this.luckyblocks = this.physics.add.staticGroup();
         this.startGame = this.physics.add.staticGroup();
-
+        this.timedEvent = new Phaser.Time.TimerEvent({ delay: 500 });
+        this.time.addEvent(this.timedEvent);
+        this.timedEvent.paused = true;
         //  Here we create the ground.
         //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
          this.ground = this.platforms.create(0, 500, 'ground').setScale(1000, 1).refreshBody();
@@ -114,7 +116,7 @@ class WorldOneLevelOne extends Phaser.Scene {
         this.stars.children.iterate(child =>
         {
             //  Give each star a slightly different bounce
-            child.setBounceY(Phaser.Math.FloatBetween(0, 0.5));
+            child.setBounceY(Phaser.Math.FloatBetween(0, 0.5))
 
         });
         this.lb1star = this.stars.create((this.iw/2-224), 400);
@@ -144,9 +146,6 @@ class WorldOneLevelOne extends Phaser.Scene {
 
     update ()
     {
-        if(this.player.body.touching.down){
-            this.doublejump = false;
-        }
         if(this.player.x < 100 && this.inCutscene){
             this.player.anims.play('right', true);
             this.player.setVelocityX(320);
@@ -162,11 +161,11 @@ class WorldOneLevelOne extends Phaser.Scene {
 
         if (cam.deadzone)
         {
-            this.moveCam
+            this.moveCam;
         }
         else if (cam._tb)
         {
-            this.moveCam
+            this.moveCam;
         }
 
 
@@ -194,20 +193,32 @@ class WorldOneLevelOne extends Phaser.Scene {
             this.player.setVelocityX(0);
             this.player.anims.play('turn');
         }
-
+        if(this.player.body.touching.down){
+            this.time.addEvent(this.timedEvent);
+        }
         if (this.cursors.up.isDown)
         {
-            if(!this.doublejump){
             if(!this.player.body.touching.down){
-            this.player.setVelocityY(this.jp*-1);
+            if(this.timedEvent.getRemaining() == 0){
             this.doublejump = true;
+            this.time.addEvent(this.timedEvent);
+            this.timedEvent.paused = true;
+            }
+            if(this.doublejump){
+            this.player.setVelocityY(this.jp*-1);
+            this.doublejump = false;
+                }
             }
             if(this.player.body.touching.down){
             this.player.setVelocityY(this.jp*-1);
+            this.timedEvent.paused = false;
             }
         }
     }
 }
+
+
+
     hitLuckyBlock() {
         //console.log(this.lb1used);
         this.lby = 0;
