@@ -28,6 +28,9 @@ class MainMenu extends Phaser.Scene {
         //  The platforms group contains the ground and the 2 ledges we can jump on
         this.platforms = this.physics.add.staticGroup();
         this.startGame = this.physics.add.staticGroup();
+        this.timedEvent = new Phaser.Time.TimerEvent({ delay: 500 });
+        this.time.addEvent(this.timedEvent);
+        this.timedEvent.paused = true;
 
         //  Here we create the ground.
         //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
@@ -165,11 +168,23 @@ class MainMenu extends Phaser.Scene {
         }
 
         if (this.cursors.up.isDown)
-        {
-            if(this.player.body.touching.down){
-            this.player.setVelocityY(this.jp*-1);
+            {
+                if(!this.player.body.touching.down){
+                if(this.timedEvent.getRemaining() == 0){
+                this.doublejump = true;
+                this.time.addEvent(this.timedEvent);
+                this.timedEvent.paused = true;
+                }
+                if(this.doublejump){
+                this.player.setVelocityY(this.jp*-1);
+                this.doublejump = false;
+                    }
+                }
+                if(this.player.body.touching.down){
+                this.player.setVelocityY(this.jp*-1);
+                this.timedEvent.paused = false;
+                }
             }
-        }
     }
     startGameCutscene(player, gameStart)
     {
