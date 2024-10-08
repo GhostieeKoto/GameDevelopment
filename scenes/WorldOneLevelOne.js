@@ -14,13 +14,16 @@ class WorldOneLevelOne extends Phaser.Scene {
     lbname;
     bombs;
     sky;
+    grid = 32;
     startGame;
     inCutscene = true;
     stars;
     player;
+    go2;
     lby;
     PlayerCollides;
     lb1used = false;
+    lb2used = false;
     doublejump = true;
     jp = 350;
     g = 500;
@@ -74,8 +77,8 @@ class WorldOneLevelOne extends Phaser.Scene {
         });
 
         //  Now let's create some ledges
-        this.platforms.create((this.iw/2-256), 400, 'ground').setScale(1, 1).refreshBody().name = "ground";
-        this.platforms.create((this.iw/2-128), 400, 'ground').setScale(1, 1).refreshBody().name = "ground";
+        this.platforms.create((this.iw/2-(this.grid*2.5)), 400, 'ground').setScale(1, 1).refreshBody().name = "Brick";
+        this.platforms.create((this.iw/2-(this.grid*0.5)), 400, 'ground').setScale(1, 1).refreshBody().name = "Brick";
 
         // The player and its settings
         this.player = this.physics.add.sprite(0, 450, 'dude');
@@ -83,9 +86,13 @@ class WorldOneLevelOne extends Phaser.Scene {
         this.player.body.onCollide = true;
         this.physics.world.on('collide', (gameObject1, gameObject2, body1, body2) =>
             {
-                //console.log(gameObject2.name);
-                if(gameObject2.name.includes("LuckyBlock")){
-                    this.lbname = gameObject2;
+                //console.log(gameObject1.name);
+                if(gameObject2.name.includes("LuckyBlock") && gameObject1.name.includes("player")){
+                    this.lbname = gameObject2.name;
+                }
+                if(gameObject1.name.includes("player")){
+                    this.go2 = gameObject2.name;
+                    console.log(gameObject2.name);
                 }
             });
         //  Player physics properties. Give the little guy a slight bounce.
@@ -111,7 +118,7 @@ class WorldOneLevelOne extends Phaser.Scene {
         //  Some stars to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
         this.stars = this.physics.add.group({
             defaultKey: 'star',
-            repeat: 0,
+            repeat: 1,
         });
         this.stars.children.iterate(child =>
         {
@@ -119,12 +126,18 @@ class WorldOneLevelOne extends Phaser.Scene {
             child.setBounceY(Phaser.Math.FloatBetween(0, 0.5))
 
         });
-        this.lb1star = this.stars.create((this.iw/2-224), 400);
+        this.lb1star = this.stars.create((this.iw/2-(this.grid*1.5)), 400);
+        this.lb2star = this.stars.create((this.iw/2-(this.grid*7.5)), 400);
         this.lb1star.body.setAllowGravity(false);
+        this.lb2star.body.setAllowGravity(false);
         this.lb1star.body.onCollide = true;
+        this.lb2star.body.onCollide = true;
         this.lb1star.name = "lb1star";
-        this.lb1 = this.luckyblocks.create((this.iw/2-224), 400, 'block');
-        this.lb1.name = "lb1";
+        this.lb2star.name = "lb2star";
+        this.lb1 = this.luckyblocks.create((this.iw/2-(this.grid*1.5)), 400, 'block');
+        this.lb2 = this.luckyblocks.create((this.iw/2-(this.grid*7.5)), 400, 'block');        
+        this.lb1.name = "LuckyBlock1";
+        this.lb2.name = "LuckyBlock2";
         this.bombs = this.physics.add.group();
 
         //  The score
@@ -146,6 +159,7 @@ class WorldOneLevelOne extends Phaser.Scene {
 
     update ()
     {
+        //console.log(this.go2);
         if(this.player.x < 100 && this.inCutscene){
             this.player.anims.play('right', true);
             this.player.setVelocityX(320);
@@ -223,11 +237,17 @@ class WorldOneLevelOne extends Phaser.Scene {
         //console.log(this.lb1used);
         this.lby = 0;
         //console.log("Hit Lucky Block!!");
-        if(!this.lb1used){
+        if(!this.lb1used && this.lbname == "LuckyBlock1"){
         this.lb1.anims.play('lbup');
         this.lb1star.body.setAllowGravity(true);
         this.lb1star.setVelocityY(-190);
         this.lb1used = true;
+        }
+        if(!this.lb2used && this.lbname == "LuckyBlock2"){
+        this.lb2.anims.play('lbup');
+        this.lb2star.body.setAllowGravity(true);
+        this.lb2star.setVelocityY(-190);
+        this.lb2used = true;
         }
     }
 
