@@ -82,19 +82,41 @@ class WorldOneLevelOne extends Phaser.Scene {
 
         // The player and its settings
         this.player = this.physics.add.sprite(0, 450, 'dude');
+        this.lbplr = this.physics.add.sprite(0, 450, 'air');
         this.player.name = 'player';
-        this.player.body.onCollide = true;
-        this.physics.world.on('collide', (gameObject1, gameObject2, body1, body2) =>
+        this.lbplr.name = 'lbplr';
+        this.player.setSize(24,20);
+        this.player.setOffset(5,22);
+        this.lbplr.setSize(2,42);
+        this.lbplr.body.setAllowGravity(false);
+        this.lbplr.body.onCollide = true;
+        this.player.body.onCollide = false;
+        // Adjust the physics collider to check for overlap
+        this.physics.world.on('overlap', (object1, object2, body1, body2) => {
+        // Add more precise check here
+            let playertop = object1.getBounds().top;
+            let luckyBlockBottom = object2.getBounds().bottom;
+
+            if (playertop <= luckyBlockBottom && object1.name.includes("lbplr")) {
+                    console.log('Top of the hitbox hits the lucky block!');
+                    this.hitLuckyBlock(object2.name);
+                }
+        }, null, this);
+
+/*        this.physics.world.on('collide', (gameObject1, gameObject2, body1, body2) =>
             {
-                //console.log(gameObject1.name);
                 if(gameObject2.name.includes("LuckyBlock") && gameObject1.name.includes("player")){
-                    this.lbname = gameObject2.name;
+                console.log(gameObject1.body.touching.up);
+                if(gameObject1.body.touching.up && gameObject2.body.touching.down){
+                    this.hitLuckyBlock(gameObject2.name);
+                }
                 }
                 if(gameObject1.name.includes("player")){
                     this.go2 = gameObject2.name;
                     console.log(gameObject2.name);
                 }
             });
+*/
         //  Player physics properties. Give the little guy a slight bounce.
         this.player.setBounce(0.15);
         this.player.setCollideWorldBounds(false);
@@ -137,7 +159,9 @@ class WorldOneLevelOne extends Phaser.Scene {
         this.lb1 = this.luckyblocks.create((this.iw/2-(this.grid*1.5)), 400, 'block');
         this.lb2 = this.luckyblocks.create((this.iw/2-(this.grid*7.5)), 400, 'block');        
         this.lb1.name = "LuckyBlock1";
+        this.lb1.body.onOverlap = true;
         this.lb2.name = "LuckyBlock2";
+        this.lb2.body.onOverlap = true;
         this.bombs = this.physics.add.group();
 
         //  The score
@@ -147,8 +171,11 @@ class WorldOneLevelOne extends Phaser.Scene {
         this.physics.add.collider(this.stars, this.platforms);
         this.physics.add.collider(this.stars, this.luckyblocks);
         this.physics.add.collider(this.player, this.platforms);
-        this.physics.add.overlap(this.player, this.luckyblocks, this.hitLuckyBlock, null, this);
+        this.physics.add.overlap(this.player, this.luckyblocks, null, null, this);
+        this.physics.add.overlap(this.lbplr, this.luckyblocks, null, null, this);
+        this.physics.add.overlap(this.player, this.platforms, null, null, this);
         this.physics.add.collider(this.player, this.luckyblocks);
+        this.physics.add.collider(this.lbplr, this.luckyblocks);
         this.physics.add.collider(this.bombs, this.platforms);
 
         //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
@@ -159,6 +186,8 @@ class WorldOneLevelOne extends Phaser.Scene {
 
     update ()
     {
+        this.lbplr.x = this.player.x;
+        this.lbplr.y = this.player.y;
         //console.log(this.go2);
         if(this.player.x < 100 && this.inCutscene){
             this.player.anims.play('right', true);
@@ -233,17 +262,17 @@ class WorldOneLevelOne extends Phaser.Scene {
 
 
 
-    hitLuckyBlock() {
+    hitLuckyBlock(lbname) {
         //console.log(this.lb1used);
         this.lby = 0;
         //console.log("Hit Lucky Block!!");
-        if(!this.lb1used && this.lbname == "LuckyBlock1"){
+        if(!this.lb1used && lbname == "LuckyBlock1"){
         this.lb1.anims.play('lbup');
         this.lb1star.body.setAllowGravity(true);
         this.lb1star.setVelocityY(-190);
         this.lb1used = true;
         }
-        if(!this.lb2used && this.lbname == "LuckyBlock2"){
+        if(!this.lb2used && lbname == "LuckyBlock2"){
         this.lb2.anims.play('lbup');
         this.lb2star.body.setAllowGravity(true);
         this.lb2star.setVelocityY(-190);
