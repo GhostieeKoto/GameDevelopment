@@ -24,6 +24,7 @@ class WorldOneLevelOne extends Phaser.Scene {
     PlayerCollides;
     lb1used = false;
     lb2used = false;
+    lb3used = false;
     doublejump = false;
     supersmash = false;
     gpound = false;
@@ -128,7 +129,6 @@ class WorldOneLevelOne extends Phaser.Scene {
         this.cameras.main.startFollow(this.player);
         //alert("Camera Followed");
 
-        // Lucky Block Stuff
 
         //  Input Events
         this.cameras.main.startFollow(this.player, true);
@@ -151,18 +151,25 @@ class WorldOneLevelOne extends Phaser.Scene {
             child.setBounceY(Phaser.Math.FloatBetween(0, 0.5))
 
         });
+        // Lucky Block Stuff
         this.lb1star = this.stars.create((this.iw/2-(this.grid*1.5)), 400);
         this.lb2star = this.stars.create((this.iw/2-(this.grid*7.5)), 400);
+        this.lb3star = this.stars.create((this.iw/2-(this.grid*1.5)), 300);
         this.lb1star.body.setAllowGravity(false);
         this.lb2star.body.setAllowGravity(false);
+        this.lb3star.body.setAllowGravity(false);
         this.lb1star.name = "lb1star";
         this.lb2star.name = "lb2star";
+        this.lb3star.name = "lb2star";
         this.lb1 = this.luckyblocks.create((this.iw/2-(this.grid*1.5)), 400, 'block');
         this.lb2 = this.luckyblocks.create((this.iw/2-(this.grid*7.5)), 400, 'block');        
+        this.lb3 = this.luckyblocks.create((this.iw/2-(this.grid*1.5)), 300, 'block');        
         this.lb1.name = "LuckyBlock1";
         this.lb1.body.onOverlap = true;
         this.lb2.name = "LuckyBlock2";
         this.lb2.body.onOverlap = true;
+        this.lb3.name = "LuckyBlock3";
+        this.lb3.body.onOverlap = true;
         this.bombs = this.physics.add.group();
 
         //  The score
@@ -302,6 +309,12 @@ class WorldOneLevelOne extends Phaser.Scene {
         this.lb2star.body.setAllowGravity(true);
         this.lb2star.setVelocityY(-190);
         this.lb2used = true;
+        }
+        if(!this.lb3used && lbname == "LuckyBlock3"){
+        this.lb3.anims.play('lbup');
+        this.lb3star.body.setAllowGravity(true);
+        this.lb3star.setVelocityY(-190);
+        this.lb3used = true;
         }
     }
 
