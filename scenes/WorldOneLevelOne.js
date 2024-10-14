@@ -24,7 +24,9 @@ class WorldOneLevelOne extends Phaser.Scene {
     PlayerCollides;
     lb1used = false;
     lb2used = false;
-    doublejump = true;
+    doublejump = false;
+    supersmash = false;
+    gpound = false;
     jp = 350;
     g = 500;
     create ()
@@ -85,19 +87,20 @@ class WorldOneLevelOne extends Phaser.Scene {
         this.lbplr = this.physics.add.sprite(0, 450, 'air');
         this.player.name = 'player';
         this.lbplr.name = 'lbplr';
-        this.player.setSize(24,20);
-        this.player.setOffset(5,22);
-        this.lbplr.setSize(2,42);
+        this.player.setSize(26,40);
+        this.player.setOffset(3,2);
+        this.lbplr.setSize(26,5);
+        this.lbplr.setOffset(-5,-12);
         this.lbplr.body.setAllowGravity(false);
         this.lbplr.body.onCollide = true;
         this.player.body.onCollide = false;
         // Adjust the physics collider to check for overlap
-        this.physics.world.on('overlap', (object1, object2, body1, body2) => {
+        this.physics.world.on('collide', (object1, object2, body1, body2) => {
         // Add more precise check here
             let playertop = object1.getBounds().top;
             let luckyBlockBottom = object2.getBounds().bottom;
-
-            if (playertop <= luckyBlockBottom && object1.name.includes("lbplr")) {
+            console.log(playertop, luckyBlockBottom, object1.name, object2.name);
+            if (playertop >= luckyBlockBottom && object1.name.includes("lbplr")) {
                     console.log('Top of the hitbox hits the lucky block!');
                     this.hitLuckyBlock(object2.name);
                 }
@@ -152,8 +155,6 @@ class WorldOneLevelOne extends Phaser.Scene {
         this.lb2star = this.stars.create((this.iw/2-(this.grid*7.5)), 400);
         this.lb1star.body.setAllowGravity(false);
         this.lb2star.body.setAllowGravity(false);
-        this.lb1star.body.onCollide = true;
-        this.lb2star.body.onCollide = true;
         this.lb1star.name = "lb1star";
         this.lb2star.name = "lb2star";
         this.lb1 = this.luckyblocks.create((this.iw/2-(this.grid*1.5)), 400, 'block');
@@ -171,7 +172,6 @@ class WorldOneLevelOne extends Phaser.Scene {
         this.physics.add.collider(this.stars, this.platforms);
         this.physics.add.collider(this.stars, this.luckyblocks);
         this.physics.add.collider(this.player, this.platforms);
-        this.physics.add.overlap(this.player, this.luckyblocks, null, null, this);
         this.physics.add.overlap(this.lbplr, this.luckyblocks, null, null, this);
         this.physics.add.overlap(this.player, this.platforms, null, null, this);
         this.physics.add.collider(this.player, this.luckyblocks);
@@ -186,6 +186,11 @@ class WorldOneLevelOne extends Phaser.Scene {
 
     update ()
     {
+        if(this.player.body.touching.down){
+            this.gpound = true;
+            this.supersmash = false;
+            this.player.setBounce(0.15);
+        }
         this.lbplr.x = this.player.x;
         this.lbplr.y = this.player.y;
         //console.log(this.go2);
@@ -242,20 +247,39 @@ class WorldOneLevelOne extends Phaser.Scene {
         if (this.cursors.up.isDown)
         {
             if(!this.player.body.touching.down){
-            if(this.timedEvent.getRemaining() == 0){
-            this.doublejump = true;
-            this.time.addEvent(this.timedEvent);
-            this.timedEvent.paused = true;
-            }
-            if(this.doublejump){
-            this.player.setVelocityY(this.jp*-1);
-            this.doublejump = false;
+                if(this.timedEvent.getRemaining() == 0){
+                    this.doublejump = true;
+                    this.time.addEvent(this.timedEvent);
+                    this.timedEvent.paused = true;
                 }
+            if(this.doublejump){
+                this.player.setVelocityY(this.jp*-1);
+                this.doublejump = false;
+                if(this.gpound){
+                    this.supersmash = true;
+                }else{
+                    this.gpound = true;
+                }
+            }
             }
             if(this.player.body.touching.down){
             this.player.setVelocityY(this.jp*-1);
             this.timedEvent.paused = false;
             }
+        }
+        if (this.cursors.down.isDown){
+            if(!this.player.body.touching.down){
+                if(this.supersmash){
+                    this.player.setVelocityY(this.jp*3);
+                    this.player.setBounce(0);
+                    this.gpound = false;
+                    this.supersmash = false; 
+                }
+                if(this.gpound){
+                this.player.setVelocityY(this.jp*1);
+                this.gpound = false;
+                    }
+                }
         }
     }
 }
@@ -265,6 +289,7 @@ class WorldOneLevelOne extends Phaser.Scene {
     hitLuckyBlock(lbname) {
         //console.log(this.lb1used);
         this.lby = 0;
+        this.player.setVelocityY(0);
         //console.log("Hit Lucky Block!!");
         if(!this.lb1used && lbname == "LuckyBlock1"){
         this.lb1.anims.play('lbup');
@@ -283,8 +308,10 @@ class WorldOneLevelOne extends Phaser.Scene {
 
     collectStar (player, star)
     {
-        star.disableBody(true, true);
-
+        star.body.setAllowGravity(false);
+        star.y += 500;
+        //star.disableBody(true, true);
+        
         //  Add and update the score
         this.score += 1;
         this.scoreText.setText(`Score: ${this.score}`);
