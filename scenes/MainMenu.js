@@ -2,6 +2,7 @@ class MainMenu extends Phaser.Scene {
     constructor() {
         super("mainMenu");
     }
+
     scoreText;
     gameOver = false;
     score = 0;
@@ -56,8 +57,15 @@ class MainMenu extends Phaser.Scene {
         // Start Camera Following
         this.cameras.main.startFollow(this.player);
         //alert("Camera Followed");
-
-        //  Our player animations, turning, walking left and walking right.
+        if (this.anims.exists('left')) {
+            this.anims.remove('left');
+        }
+        if (this.anims.exists('right')) {
+            this.anims.remove('right');
+        }
+        if (this.anims.exists('turn')) {
+            this.anims.remove('turn');
+        }
         this.anims.create({
             key: 'left',
             frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
@@ -76,12 +84,6 @@ class MainMenu extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
             frameRate: 10,
             repeat: -1
-        });
-        this.anims.create({
-            key: 'lbup',
-            frames: this.anims.generateFrameNumbers('lbhit', { start: 0, end: 3 }),
-            frameRate: 10,
-            repeat: 0
         });
 
         //  Input Events

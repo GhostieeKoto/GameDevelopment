@@ -1,12 +1,12 @@
 var gameSettings = {
-    playerSpeed: 200,
+    playerSpeed: 0.25,
 }
 
 var config = {
     width: window.innerWidth,
     height: window.innerHeight,
     backgroundColor: 0x000000,
-    scene: [Preload, MainMenu, GameStartCutscene, WorldOneLevelOne],
+    scene: [Preload, MainMenu, GameStartCutscene, WorldOneLevelOne, NextLevel],
     pixelArt: true,
     physics: {
         default: "arcade",
@@ -23,11 +23,3 @@ let player;
 let cursors;
 let playerx;
 let playery;
-
-function preload() {
-    this.load.image('sky', 'assets/sky.png');
-    this.load.image('ground', 'assets/platform.png');
-    this.load.image('star', 'assets/star.png');
-    this.load.image('bomb', 'assets/bomb.png');
-    this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
-}

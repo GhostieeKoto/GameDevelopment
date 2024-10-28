@@ -100,7 +100,7 @@ class GameStartCutscene extends Phaser.Scene {
         
         if(this.cutscene){
             if(this.player.x > this.iw){
-                this.scene.start("WorldOneLevelOne");
+                this.scene.start("NextLevel", {nextScene:"WorldOneLevelOne", world:1, level:1, lives: 3});
                 };
         }
 
