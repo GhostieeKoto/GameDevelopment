@@ -2,6 +2,7 @@ class WorldOneLevelOne extends Phaser.Scene {
     constructor() {
         super("WorldOneLevelOne");
         this.resetSlimeState();
+        this.pKey;
     }
 
     init(data) {
@@ -67,12 +68,17 @@ class WorldOneLevelOne extends Phaser.Scene {
         //  A simple background for our game
         this.sky = this.add.tileSprite(200, 200, 400, 600, 'sky').setScale(1000);
         //alert("Background Made");
+        this.height = 1;
 
         //  The platforms group contains the ground and the 2 ledges we can jump on
         this.platforms = this.physics.add.staticGroup();
         this.luckyblocks = this.physics.add.staticGroup();
         this.startGame = this.physics.add.staticGroup();
+        //this.winlevel = this.physics.add.staticGroup();
         this.timedEvent = new Phaser.Time.TimerEvent({ delay: 500 });
+        this.phitcd = new Phaser.Time.TimerEvent({ delay: 500 });
+        this.time.addEvent(this.phitcd);
+        this.phitcd.paused = false;
         this.time.addEvent(this.timedEvent);
         this.timedEvent.paused = true;
         //  Here we create the ground.
@@ -161,6 +167,12 @@ class WorldOneLevelOne extends Phaser.Scene {
             repeat: 0
         });
         this.anims.create({
+            key: 'shide',
+            frames: this.anims.generateFrameNumbers('slime', { start: 33, end: 33}),
+            frameRate: 4,
+            repeat: -1
+        });
+        this.anims.create({
             key: 'cspin',
             frames: this.anims.generateFrameNumbers('coin', { start: 0, end: 3 }),
             frameRate: 4,
@@ -170,7 +182,6 @@ class WorldOneLevelOne extends Phaser.Scene {
         //  Now let's create some ledges
         this.platforms.create((this.iw/2-(this.grid*2.5)), 400, 'ground').setScale(1, 1).refreshBody().name = "Brick";
         this.platforms.create((this.iw/2-(this.grid*0.5)), 400, 'ground').setScale(1, 1).refreshBody().name = "Brick";
-
         // The slime
         this.slime1 = this.physics.add.sprite(500, 450, 'slime');
         this.slime1.setSize(18,16);
@@ -182,6 +193,7 @@ class WorldOneLevelOne extends Phaser.Scene {
         this.s1dead = false;
         this.s1right = true;
         this.resetSlimeState();  // Reset the slime's state
+
 
         // The player and its settings
         this.player = this.physics.add.sprite(0, 450, 'dude');
@@ -246,12 +258,12 @@ class WorldOneLevelOne extends Phaser.Scene {
         this.cameras.main.setBounds(0, 0, 999999999, 0);
         this.physics.world.setBounds(0, 0, 5000, 1000);
         this.cursors = this.input.keyboard.createCursorKeys();
+        this.pKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
 
         this.cameras.main.followOffset.set(0, 0);
 
         this.cameras.main.setDeadzone(200, 350);
         this.cameras.main.setZoom(1);
-
         //  Some stars to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
         this.stars = this.physics.add.group({
             defaultKey: 'star',
@@ -261,7 +273,6 @@ class WorldOneLevelOne extends Phaser.Scene {
         {
             //  Give each star a slightly different bounce
             child.setBounceY(Phaser.Math.FloatBetween(0, 0.5))
-
         });
         this.coins = this.physics.add.group({
             defaultKey: 'coin',
@@ -273,7 +284,15 @@ class WorldOneLevelOne extends Phaser.Scene {
             child.setBounceY(Phaser.Math.FloatBetween(0, 0.5))
 
         });
+
+        this.bombs = this.physics.add.group();
+        const bomb1 = this.bombs.create(1000, 300, 'bomb');
+        bomb1.setBounce(1);
+        bomb1.setCollideWorldBounds(true);
+    
+        // ... (rest of the existing code)
         // Lucky Block Stuff
+
         this.lb1coin = this.coins.create((this.iw/2-(this.grid*1.5)), 400).setScale(1.25).anims.play('cspin', true).setOffset(0,2);
         this.lb2coin = this.coins.create((this.iw/2-(this.grid*7.5)), 400).setScale(1.25).anims.play('cspin', true).setOffset(0,2);
         this.lb3star = this.stars.create((this.iw/2-(this.grid*1.5)), 300);
@@ -292,7 +311,6 @@ class WorldOneLevelOne extends Phaser.Scene {
         this.lb2.body.onOverlap = true;
         this.lb3.name = "LuckyBlock3";
         this.lb3.body.onOverlap = true;
-        this.bombs = this.physics.add.group();
 
         //  The score
         this.scoreText = this.add.text(this.cameras.x, 16, 'Score: 0', { fontSize: '32px', fill: '#000', fontFamily: 'cursive' }).setScrollFactor(0);
@@ -316,12 +334,21 @@ class WorldOneLevelOne extends Phaser.Scene {
         this.physics.add.overlap(this.player, this.stars, this.collectStar, null, this);
         this.physics.add.overlap(this.player, this.coins, this.collectCoin, null, this);
         //this.physics.add.overlap(this.player, this.startGame, this.startGameCutscene, null, this);
-        this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
+        this.playerbombcollider = this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
         console.log("create done!");
         console.log(this.slime1);
     }
     update ()
     {
+        if (Phaser.Input.Keyboard.JustDown(this.pKey)) {
+            this.collectStar(null, null);
+        }
+        if (this.bombs.getChildren().length > 0) {
+            const bomb = this.bombs.getChildren()[0];  // Get the first (and only) bomb
+            if (bomb.body.touching.down) {
+                bomb.setVelocityX(0);
+            }
+        }
 
         this.checkSlime1();
 
@@ -363,7 +390,7 @@ class WorldOneLevelOne extends Phaser.Scene {
             this.scene.start("bootGame");
         }
         if (this.player.y > 1080){
-            this.scene.start("bootGame");
+            this.killPlayer();
         }
 
         if (this.cursors.left.isDown)
@@ -465,12 +492,14 @@ startAnimation();
 //console.log("e");
 // Listen for the animation complete event
 this.slime1.on('animationcomplete', () => {
+    if(!this.s1die){
     //console.log('Animation completed');
     // Stop moving the sprite
     this.slime1.setVelocityX(0);
     // Wait 500ms before starting the animation again
     this.time.delayedCall(500, startAnimation, [], this);
-});
+    }
+    });
     }
 
 
@@ -501,14 +530,36 @@ this.slime1.on('animationcomplete', () => {
     }
 
     killPlayer(){
+        console.log(this.phitcd.getRemaining());
+        if(this.phitcd.getRemaining() == 0){
+        if(this.height == 1){
         this.playerdead = true;
         console.log("lmao");
+        this.physics.world.removeCollider(this.playerbombcollider);
         this.physics.world.removeCollider(this.playergroundcollider);
         this.physics.world.removeCollider(this.playerluckyblockcollider);
         this.physics.world.removeCollider(this.playerluckyblockcollider2);
         this.physics.world.removeCollider(this.playerslime1collider);
         this.player.setVelocityY(this.jp*-1.5);
         this.checkPlayerY();
+        }else if(this.height == 2){
+            this.physics.world.removeCollider(this.playerslime1collider);
+            this.physics.world.removeCollider(this.playerbombcollider);
+            this.playerdead = false;
+            this.player.setCollideWorldBounds(true);
+            this.player.setScale(1,1);
+            this.time.delayedCall(500, this.enablePlayerCollision, [], this);
+            }
+        this.time.addEvent(this.phitcd);
+        }
+    }
+
+    enablePlayerCollision(){
+        this.player.y -= 50;
+        this.playerslime1collider = this.physics.add.collider(this.slime1, this.player);
+        this.playerbombcollider = this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
+        this.height = 1;
+        this.playerscaley = 0;
     }
 
     checkPlayerY(){
@@ -549,9 +600,10 @@ this.slime1.on('animationcomplete', () => {
             this.slime1.anims.play('sdeath');
             console.log("animation started")
             this.slime1.on('animationcomplete', () => {
-                console.log("Animation Completed");
+                console.log(this.slime1.y);
                 this.slime1.setCollideWorldBounds(false);
-                this.slime1.y += 250;        
+                this.slime1.y+= 250;
+                this.slime1.anims.play('shide');
             });
         }
             break;
@@ -563,15 +615,19 @@ this.slime1.on('animationcomplete', () => {
 
         collectStar (player, star)
         {
+            if(star != null){
             star.body.setAllowGravity(false);
             star.y += 500;
+            }
             //star.disableBody(true, true);
             
             //  Add and update the score
             //this.score += 1;
             //this.scoreText.setText(`Score: ${this.score}`);
             this.player.setScale(1,1.5);
-            this.playerscaley = 7.5;
+            this.player.y -= 10;
+            this.playerscaley = 9.5;
+            this.height = 2;
         }
         collectCoin (player, coin)
         {
@@ -586,7 +642,7 @@ this.slime1.on('animationcomplete', () => {
 
     hitBomb (player, bomb)
     {
-        location.reload();
+        this.killPlayer();
     }
 
 
