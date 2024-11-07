@@ -28,7 +28,7 @@ class NextLevel extends Phaser.Scene {
         }).setOrigin(0.5);
 
         // After a delay, return to the previous scene
-        this.time.delayedCall(2000, () => {
+        this.time.delayedCall(500, () => {
             this.scene.start(this.nextScene, { lives: this.lives });
         }, [], this);
     }

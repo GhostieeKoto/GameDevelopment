@@ -1,6 +1,7 @@
 class MainMenu extends Phaser.Scene {
     constructor() {
         super("mainMenu");
+        this.key1;
     }
 
     scoreText;
@@ -47,12 +48,16 @@ class MainMenu extends Phaser.Scene {
 
 
 
+        // Developer cheats to skip to certain levels
+        this.key1 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ONE);
+
         // The player and its settings
         this.player = this.physics.add.sprite((this.iw)/2, 300, 'dude');
 
         //  Player physics properties. Give the little guy a slight bounce.
         this.player.setBounce(0.15);
-        this.player.setCollideWorldBounds(false);
+        this.player.setCollideWorldBounds(true);
+        this.physics.world.setBounds(0, 0, 1500, 1500);
         
         // Start Camera Following
         this.cameras.main.startFollow(this.player);
@@ -129,6 +134,11 @@ class MainMenu extends Phaser.Scene {
 
     update ()
     {
+
+        if (Phaser.Input.Keyboard.JustDown(this.key1)) {
+            this.scene.start("WorldOneLevelOne");
+        }
+
         //this.platforms.create(this.player.x, 500, 'ground').setScale(1).refreshBody();
         this.sky.tilePositionX += 1;
         //this.bg.tilePositionY += 1.5;
