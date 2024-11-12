@@ -4,7 +4,12 @@ class WorldOneLevelOne extends Phaser.Scene {
         this.resetSlimeState();
         this.pKey;
         this.oKey;
+        this.rKey;
         this.key1;
+        this.acceleration = 10; // Acceleration rate
+        this.deceleration = 10; // Deceleration rate
+        this.maxSpeed = this.pspeed; // Maximum speed (use your existing pspeed value)
+        this.inCutscene = true;
     }
 
     init(data) {
@@ -20,13 +25,13 @@ class WorldOneLevelOne extends Phaser.Scene {
         this.s1walking = false;
         this.s1walk = true;
     }
-
     scoreText;
     gameOver = false;
     score = 0;
     iw = window.innerWidth;
     ih = window.innerHeight;
     cursors;
+    updateGame = false;
     platforms;
     ground;
     luckyblocks;
@@ -36,7 +41,6 @@ class WorldOneLevelOne extends Phaser.Scene {
     sky;
     grid = 32;
     startGame;
-    inCutscene = true;
     lives = 3;
     stars;
     player;
@@ -49,9 +53,12 @@ class WorldOneLevelOne extends Phaser.Scene {
     turtldir = true;
     s1walking = false;
     turtlespeed = -50;
+    playerfixed = false;
+    pvfix = false;
     go2;
     lby;
     PlayerCollides;
+    PlayerCanMove = true;
     lb1used = false;
     lb2used = false;
     lb3used = false;
@@ -62,6 +69,7 @@ class WorldOneLevelOne extends Phaser.Scene {
     pspeed = 320;
     g = 500;
     create() {
+        this.inCutscene = true;
         this.turtlestoppedmoving = false;
         this.lb1used = false;
         this.lb2used = false;
@@ -78,6 +86,16 @@ class WorldOneLevelOne extends Phaser.Scene {
         this.platforms = this.physics.add.staticGroup();
         this.luckyblocks = this.physics.add.staticGroup();
         this.startGame = this.physics.add.staticGroup();
+        this.slime = this.physics.add.group({
+            setSize: {x: 18, y: 16},
+            setScale: { x: 1.25, y: 1.25},
+            onCollide: true,
+            setDepth: 1
+          });        
+          this.slime.children.iterate((child) => {
+            child.name = $`slime${child.y}`
+          });
+        console.log(this.slime.children.name);
         this.end = this.physics.add.staticGroup();
         this.flag = this.physics.add.staticGroup();
         //this.winlevel = this.physics.add.staticGroup();
@@ -99,35 +117,16 @@ class WorldOneLevelOne extends Phaser.Scene {
         this.ground.name = 'ground';
         //this.startGame.create((this.iw/2)+500, 50, 'zone');
 
-        if (this.anims.exists('left')) {
-            this.anims.remove('left');
-        }
-        if (this.anims.exists('right')) {
-            this.anims.remove('right');
-        }
-        if (this.anims.exists('turn')) {
-            this.anims.remove('turn');
-        }
-        if (this.anims.exists('lbup')) {
-            this.anims.remove('lbup');
-        }
-        if (this.anims.exists('sidle')) {
-            this.anims.remove('sidle');
-        }
-        if (this.anims.exists('swalk')) {
-            this.anims.remove('swalk');
-        }
-        if (this.anims.exists('sjump')) {
-            this.anims.remove('sjump');
-        }
-        if (this.anims.exists('sdeath')) {
-            this.anims.remove('sdeath');
-        }
-        if (this.anims.exists('cspin')) {
-            this.anims.remove('cspin');
-        }
-        if (this.anims.exists('bhit')) {
-            this.anims.remove('bhit');
+        // Remove all animations at the start of the scene
+        if (this.anims && this.anims.anims && typeof this.anims.anims.forEach === 'function') {
+            this.anims.anims.forEach((animation, key) => {
+                this.anims.remove(key);
+            });
+        } else if (this.anims && typeof this.anims.removeAll === 'function') {
+            // Alternative method to remove all animations if available
+            this.anims.removeAll();
+        } else {
+            console.info('Unable to remove animations. anims.anims.forEach or anims.removeAll not available.');
         }
 
         //  Our player animations, turning, walking left and walking right.
@@ -216,6 +215,12 @@ class WorldOneLevelOne extends Phaser.Scene {
             frameRate: 10,
             repeat: 0
         });
+        this.anims.create({
+            key: 'prun',
+            frames: this.anims.generateFrameNumbers('run', { start: 0, end: 9 }),
+            frameRate: 10,
+            repeat: 0
+        });
 
         //  Now let's create some ledges
         this.platforms.create(this.grid * 15, 400, 'ground').setScale(1, 1).refreshBody().name = "Brick";
@@ -228,13 +233,8 @@ class WorldOneLevelOne extends Phaser.Scene {
         this.platforms.create(this.grid * 24, 436, 'ground').setScale(1, 1).refreshBody().name = "Brick";
 
         // The slime
-        this.slime1 = this.physics.add.sprite(this.grid*18, 400, 'slime');
+        this.slime1 = this.slime.create(this.grid*18, 400, 'slime');
         this.slime1.setSize(18, 16);
-        this.slime1.setScale(1.25, 1.25);
-        this.slime1.body.onCollide = true;
-        this.slime1.name = 'slime1';
-        this.slime1.setDepth(1);
-        this.resetSlimeState();  // Reset the slime's state
 
         // Create the castle
         this.castle = this.end.create(this.grid*70, 300, 'castle');
@@ -258,10 +258,10 @@ class WorldOneLevelOne extends Phaser.Scene {
         //this.player.setSize(26, 35);
         //this.player.setOffset(3, -2);
         this.player.setSize(60, 54);
-        this.player.setOffset(54, 64);
+        this.player.setOffset(65, 64);
         this.player.setScale(0.5, 0.55);
-        this.lbplr.setSize(30, 5);
-        this.lbplr.setOffset(-13, -13);
+        this.lbplr.setSize(15, 5);
+        this.lbplr.setOffset(0, -10);
         this.lbplr.body.setAllowGravity(false);
         this.lbplr.body.onCollide = true;
         this.player.body.onCollide = false;
@@ -272,7 +272,7 @@ class WorldOneLevelOne extends Phaser.Scene {
             let obj1btm = object1.getBounds().bottom;
             let obj2btm = object2.getBounds().bottom;
             let obj2top = object2.getBounds().top;
-            //console.log(object1.name, object2.name);
+
             if (obj1top >= obj2btm && object1.name.includes("lbplr")) {
                 console.log('Top of the hitbox hits the lucky block!');
                 this.hitLuckyBlock(object2.name);
@@ -281,16 +281,21 @@ class WorldOneLevelOne extends Phaser.Scene {
                 console.log('Top of the hitbox hits the lucky block!');
                 this.breakBrick(object2);
             }
-            if(object2.name.includes("player") && object1.name.includes("slime")){
-                console.log(obj1top >= obj2btm-54);
-                console.log(obj1top < obj2btm-54);
-            }
-            if (obj1top < obj2btm-54 && object2.name.includes("player") && object1.name.includes("slime")) {
-                this.killPlayer();
-            }
-            if (obj1top >= obj2btm-54 && object2.name.includes("player") && object1.name.includes("slime")) {
-                console.log('you killed the slime!');
-                this.killSlime(object1.name);
+            if (object2.name.includes("player") && object1.name.includes("slime")) {
+                // Calculate the collision point relative to the player's height
+                let collisionPoint = (obj1top - obj2top) / (obj2btm - obj2top);
+                console.log("Collisiion Point:",collisionPoint)
+                // If the collision point is in the upper half of the player, kill the slime
+                if (collisionPoint >= 0.5) {
+                    console.log('you killed the slime!');
+                    this.killSlime(object1.name);
+                    // Add a small upward boost to the player
+                    this.player.setVelocityY(-200);
+                } else {
+                    // If the collision is in the lower half, kill the player
+                    this.killPlayer();
+                    console.log("ouch!");
+                }
             }
         }, null, this);
 
@@ -325,6 +330,7 @@ class WorldOneLevelOne extends Phaser.Scene {
         this.cursors = this.input.keyboard.createCursorKeys();
         this.pKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
         this.oKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.O);
+        this.rKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
         this.key1 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ONE);
 
         this.cameras.main.followOffset.set(0, 0);
@@ -375,7 +381,6 @@ class WorldOneLevelOne extends Phaser.Scene {
         this.lb2.body.onOverlap = true;
         this.lb3.name = "LuckyBlock3";
         this.lb3.body.onOverlap = true;
-
         //  The score
         this.scoreText = this.add.text(this.cameras.x, 16, 'Score: 0', { fontSize: '32px', fill: '#000', fontFamily: 'cursive' }).setScrollFactor(0);
         //this.livesText = this.add.text(this.cameras.x, 48, `Lives: ${this.lives}`, { fontSize: '32px', fill: '#000', fontFamily: 'cursive' }).setScrollFactor(0);
@@ -402,16 +407,21 @@ class WorldOneLevelOne extends Phaser.Scene {
         //this.physics.add.overlap(this.player, this.startGame, this.startGameCutscene, null, this);
         this.playerbombcollider = this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
         console.log("create done!");
-        console.log(this.slime1);
     }
     update() {
+        //console.log(this.player.body.velocity.x);
         if(!this.cursors.down.isDown && this.height == 2) {
             this.player.setScale(0.5, 1);
+            if(!this.playerfixed){
+                this.player.y -= 10;
+                this.playerfixed = true;
+                this.PlayerCanMove = true;
+                this.playerscaley = 15;
+            }
         }
 
         if(this.player.body.touching.down){
-//            console.log("Player is touching the ground");
-            
+
         }
         // Dev Cheats
         if (Phaser.Input.Keyboard.JustDown(this.key1)) {
@@ -421,6 +431,10 @@ class WorldOneLevelOne extends Phaser.Scene {
         // Pretend you just collected a star
         if (Phaser.Input.Keyboard.JustDown(this.pKey)) {
             this.collectStar(null, null);
+        }
+        // Restart Scene
+        if (Phaser.Input.Keyboard.JustDown(this.rKey)) {
+            this.scene.start("WorldOneLevelOne");
         }
         // Spawn a slime enemy (NOT GUARANTEED TO BE IMPLEMENTED!)
         // The way I spawn a slime kind of sucks, but as of right now,
@@ -469,7 +483,7 @@ class WorldOneLevelOne extends Phaser.Scene {
             if (!this.playerdead) {
                 this.player.setCollideWorldBounds(true);
             }
-            this.player.setVelocityX(0); // Set velocity to 0 if on the ground. This shouldn't work, but it does.
+            //this.player.setVelocityX(0); // Set velocity to 0 if on the ground. This shouldn't work, but it does.
             this.inCutscene = false; // Makes it so that the player can do stuff
 
             this.sky.tilePositionX += 1;  // I think this moves the background every frame
@@ -493,46 +507,58 @@ class WorldOneLevelOne extends Phaser.Scene {
             {
                 this.killPlayer();
             }
-            if (this.player.y > 1080) { // If the player is too low then kill them
+            if (this.player.y > 950) { // If the player is too low then kill them
+                console.log("Player is dead");
+                if(!this.playerdead){
                 this.killPlayer();
+                }
             }
-
+            //console.log(this.player.body.velocity.x);
             // Controls
 
-            if (this.cursors.left.isDown) {
-                if (!this.playerdead) { // If the player is dead they can't move.
-                    this.player.setVelocityX(-1*this.pspeed);
-                    //this.player.anims.play('left', true);
-                    //this.player.y-=2;
+            if (this.cursors.left.isDown && this.PlayerCanMove && !this.playerdead) {
+                if(this.player.body.velocity.x > -1*this.maxSpeed){
+                this.player.setVelocityX(this.player.body.velocity.x-this.acceleration);
                 }
+                this.player.setFlipX(true); // If the player is moving left, flip the sprite
+                    this.player.anims.play('prun', true);
+                    //this.player.y-=2;
             }
-            else if (this.cursors.right.isDown) {
-                if (!this.playerdead) { // If the player is dead they can't move.
-                    this.player.setVelocityX(this.pspeed);
-                    //this.player.anims.play('right', true);
+            else if (this.cursors.right.isDown && this.PlayerCanMove && !this.playerdead) {
+                if(this.player.body.velocity.x < this.maxSpeed){
+                this.player.setVelocityX(this.player.body.velocity.x + this.acceleration);
+                }else{
+                this.player.setVelocityX(this.maxSpeed);
+                }   
+                this.player.setFlipX(false); // If the player is moving right, flip the sprite again to make it unflipped
+                this.player.anims.play('prun', true);
                     //this.player.y-=2;
-                }
             }
             else {
-                this.player.setVelocityX(0); // If no controls are being pressed, turn the player towards the camera.
+                if(this.player.body.velocity.x > 1) {
+                    this.player.setVelocityX(this.player.body.velocity.x - (this.deceleration/100*this.player.body.velocity.x));
+                }else if(this.player.body.velocity.x < 1 && this.player.body.velocity.x > 0) {
+                    this.player.setVelocityX(0);
+                }
+                
+                if(this.player.body.velocity.x < -1) {
+                    this.player.setVelocityX(this.player.body.velocity.x - (this.deceleration/100*this.player.body.velocity.x));
+                }else if(this.player.body.velocity.x > -1 && this.player.body.velocity.x < 0) {
+                    this.player.setVelocityX(0);
+                }
+                if(!this.playerdead){
+                this.player.setFrame(0);
+                }
                 //this.player.anims.play('turn', true); // Once we switch assets, an idle animation will be created.
             }
+            //console.log(this.timedEvent.paused, this.timedEvent.getRemaining());
 
-            if (this.player.body.touching.down) {    // If the player is on the ground
-                this.time.addEvent(this.timedEvent); // Start the timer for double jump
-            }
-            if (this.cursors.up.isDown) // If the player presses the jump button
+            if (Phaser.Input.Keyboard.JustDown(this.cursors.up)) // If the player presses the jump button
             {
                 if (!this.playerdead) { // If the player isn't dead
-                    if (!this.player.body.touching.down) { // If the player is not on the ground
-                        if (this.timedEvent.getRemaining() == 0) { // And the double jump timer is completed
-                            this.doublejump = true; // Then allow
-                            this.time.addEvent(this.timedEvent); // A double jump
-                            this.timedEvent.paused = true; // and pause the timer because there's no triple jump (yet ;P )
-                        }
-                        if (this.doublejump) { // if double jump is allowed
+                    if (!this.player.body.touching.down && this.doublejump) { // If the player is not on the ground
                             this.player.setVelocityY(this.jp * -1); // then double jump
-                            this.doublejump = false; // and prevent player from double jumping again
+                            this.doublejump = false; // Allow jump
                             if (this.gpound) { // if the player hasn't hit the down arrow
                                 this.supersmash = true; // then they can do a super smash
                             } else {
@@ -540,15 +566,11 @@ class WorldOneLevelOne extends Phaser.Scene {
                             }
                         }
                     }
-                    if (this.player.body.touching.down) {
-                        this.stopvibrating.paused = false; // this restarts the jump timer after hitting the ground
-                        if(this.stopvibrating.getRemaining() == 0) {
+                    if (this.player.body.touching.down) { // If the player is on the ground and can jump
                         this.player.setVelocityY(this.jp * -1);
-                        }
-                        this.timedEvent.paused = false; // this restarts the double jump timer after jumping off the ground
+                        this.doublejump = true; // Disallow jump
                     }
                 }
-            }
             if (this.cursors.down.isDown) {
                 if (!this.playerdead) {
                     if (!this.player.body.touching.down) {
@@ -562,13 +584,16 @@ class WorldOneLevelOne extends Phaser.Scene {
                             this.player.setVelocityY(this.jp * 1);
                             this.gpound = false;
                         }
-                    }else{
+                    }else if(this.height == 2){
                         this.player.setScale(0.5, 0.55);
+                        this.playerfixed = false;
+                        this.PlayerCanMove = false;
+                        this.playerscaley = 0;
                     }
                 }
             }
         }
-    }
+}
 
     checkSlime1() {
         //console.log("checkslime1");
@@ -656,20 +681,44 @@ class WorldOneLevelOne extends Phaser.Scene {
             this.lb3used = true;
         }
     }
-    breakBrick(brick){
+   /* breakBrick(brick){
         if(!brick.name.includes("LuckyBlock")){
         if(this.height == 2){
         brick.destroy();
-        }else{
-            console.log(brick.x);
+        }else if(this.height == 1){
+            //console.log(brick.x, brick.y);
             brick.anims.play('bhit', true);
             setTimeout(() => {
-                console.log(brick.anims.isPlaying);
-                brick.anims.stop();
+                //console.log(brick.anims.isPlaying);
+                //brick.anims.stop();
             }, 1000);
         }
     }
+    }*/
+
+    breakBrick(brick) {
+        console.log(brick);
+        this.tbrick = brick;
+        if (!brick.name.includes("LuckyBlock")) {
+            if (this.height == 2) {
+                brick.destroy();
+            } else if (this.height == 1) {
+                if (!brick.isAnimating) {
+                    brick.isAnimating = true;
+                    brick.anims.play('bhit', true);
+                    
+                    brick.once('animationcomplete', () => {
+                        brick.isAnimating = false;
+                        setTimeout(() => {
+                            brick.setTexture('ground');  // Reset to original texture
+                        }, 250);
+                    });
+                }
+            }
+        }
     }
+
+
 
     killPlayer() {
         console.log(this.phitcd.getRemaining());
@@ -677,32 +726,45 @@ class WorldOneLevelOne extends Phaser.Scene {
             if (this.height == 1) {
                 this.playerdead = true;
                 console.log("lmao");
-                this.physics.world.removeCollider(this.playerbombcollider);
-                this.physics.world.removeCollider(this.playergroundcollider);
-                this.physics.world.removeCollider(this.playerluckyblockcollider);
-                this.physics.world.removeCollider(this.playerluckyblockcollider2);
                 this.physics.world.removeCollider(this.playerslime1collider);
-                this.player.setVelocityY(this.jp * -1.5);
+                this.physics.world.removeCollider(this.playerbombcollider);
+                this.player.setDepth(100);
+                //this.player.setVelocityY(this.jp * -1.5);
                 //this.checkPlayerY();
+                this.player.anims.play('pdie',true);
+                setTimeout(() => {
+                    if (this.lives > 1) {
+                        this.lives--;
+                        this.scene.start("NextLevel", { nextScene: "WorldOneLevelOne", world: 1, level: 1, lives: this.lives });
+                    } else if (this.lives == 1) {
+                        this.lives--;
+                        this.scene.start("NextLevel", { nextScene: "mainMenu", world: 1, level: 1, lives: this.lives });
+                    }
+                }, 1000);
             } else if (this.height == 2) {
+                console.log("no more tall :(");
+                this.updatePlayerScale(0.5, 0.55);
                 this.physics.world.removeCollider(this.playerslime1collider);
                 this.physics.world.removeCollider(this.playerbombcollider);
                 this.playerdead = false;
                 this.player.setCollideWorldBounds(true);
-                this.player.setScale(1, 1);
                 this.time.delayedCall(500, this.enablePlayerCollision, [], this);
             }
             this.time.addEvent(this.phitcd);
         }
     }
-
+    updatePlayerScale(scaleX, scaleY) {
+        this.player.setScale(scaleX, scaleY);
+        this.height = 1;
+        this.playerscaley = 0;
+    }
     enablePlayerCollision() {
         this.playerslime1collider = this.physics.add.collider(this.slime1, this.player);
         this.playerbombcollider = this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
         this.height = 1;
         this.playerscaley = 0;
+        this.player.setScale(0.5, 0.55);
     }
-
     checkPlayerY() {
         this.player.setVelocityX(0);
         if (this.player.y > 600) {
@@ -764,7 +826,7 @@ class WorldOneLevelOne extends Phaser.Scene {
         //this.scoreText.setText(`Score: ${this.score}`);
         this.player.setScale(0.5, 1);
         this.player.y -= 10;
-        this.playerscaley = 14;
+        this.playerscaley = 15;
         this.height = 2;
     }
     collectCoin(player, coin) {
@@ -780,7 +842,16 @@ class WorldOneLevelOne extends Phaser.Scene {
     hitBomb(player, bomb) {
         this.killPlayer();
     }
+    
+    freezeGameTime() {
+        this.physics.world.timeScale = 0;
+        this.time.timeScale = 0;
+        this.anims.globalTimeScale = 0;
+    }
 
-
-
+    unfreezeGameTime() {
+        this.physics.world.timeScale = 1;
+        this.time.timeScale = 1;
+        this.anims.globalTimeScale = 1;
+    }
 }

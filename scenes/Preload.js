@@ -23,7 +23,7 @@ class Preload extends Phaser.Scene {
         // Hobbit animations
         this.load.spritesheet('idle', 'assets/sprites/hobbits/Idle.png', { frameWidth: 192, frameHeight: 192 });
         this.load.spritesheet('jump', 'assets/sprites/hobbits/Jump.png', { frameWidth: 64, frameHeight: 64 });
-        this.load.spritesheet('run', 'assets/sprites/hobbits/Run.png', { frameWidth: 64, frameHeight: 64 });
+        this.load.spritesheet('run', 'assets/sprites/hobbits/Run.png', { frameWidth: 192, frameHeight: 192 });
         this.load.spritesheet('pdeath', 'assets/sprites/hobbits/PlayerDeath.png', { frameWidth: 192, frameHeight: 192 });
         this.load.spritesheet('stop', 'assets/sprites/hobbits/Stop.png', { frameWidth: 192, frameHeight: 192 });
         this.load.spritesheet('atk', 'assets/sprites/hobbits/Attack.png', { frameWidth: 192, frameHeight: 192 });
