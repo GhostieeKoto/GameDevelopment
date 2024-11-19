@@ -328,12 +328,8 @@ class WorldOneLevelOne extends Phaser.Scene {
             this.scene.start("WorldOneLevelOne");
         }
         // Spawn a slime enemy (NOT GUARANTEED TO BE IMPLEMENTED!)
-        // The way I spawn a slime kind of sucks, but as of right now,
-        // I haven't figured out how to do this more efficiently atm.
-        // I think I can use the code for the stars/coins, but I think
-        // I'll do that later because it doesn't matter much right now
         if (Phaser.Input.Keyboard.JustDown(this.oKey)) {
-            this.summonSlime(18, 14);
+            this.summonSlime((this.player.x-(this.player.x%60)) + this.grid*2, this.player.y-(this.player.y%60)+this.grid*1);
         }
         // Spawn the bombs (This isn't spawning a bomb on command)
         if (this.bombs.getChildren().length > 0) {
