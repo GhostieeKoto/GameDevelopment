@@ -10,6 +10,7 @@ class WorldOneLevelOne extends Phaser.Scene {
         this.deceleration = 10; // Deceleration rate
         this.maxSpeed = this.pspeed; // Maximum speed (use your existing pspeed value)
         this.inCutscene = true;
+        this.timeLeft = 400;
     }
 
     init(data) {
@@ -43,6 +44,7 @@ class WorldOneLevelOne extends Phaser.Scene {
     grid = 32;
     startGame;
     lives = 3;
+    coinz = 0;
     stars;
     player;
     slime;
@@ -70,7 +72,9 @@ class WorldOneLevelOne extends Phaser.Scene {
     jp = 350;
     pspeed = 320;
     g = 500;
+    hasHitGround = false;
     create() {
+        this.timeLeft = 100;
         this.inCutscene = true;
         this.turtlestoppedmoving = false;
         this.lb1used = false;
@@ -134,7 +138,9 @@ class WorldOneLevelOne extends Phaser.Scene {
         this.ground.name = 'ground';
         //this.startGame.create((this.iw/2)+500, 50, 'zone');
 
-        
+        // Create Timer for time left
+        this.timeLeftTimer = new Phaser.Time.TimerEvent({ delay: 1000 });
+        this.time.addEvent(this.timeLeftTimer);
 
         //  Now let's create some ledges
         this.platforms.create(this.grid * 15, 400, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
@@ -265,8 +271,15 @@ class WorldOneLevelOne extends Phaser.Scene {
         this.lb2.body.onOverlap = true;
         this.lb3.name = "LuckyBlock3";
         this.lb3.body.onOverlap = true;
+        const cwidth = this.cameras.main.width;
+        const cheight = this.cameras.main.height;
         //  The score
-        this.scoreText = this.add.text(this.cameras.x, 16, 'Score: 0', { fontSize: '32px', fill: '#000', fontFamily: 'cursive' }).setScrollFactor(0);
+        this.scoreText = this.add.text(0, 16, 'Score', { fontSize: '32px', fill: '#000', fontFamily: 'cursive' }).setOrigin(0).setScrollFactor(0);
+        this.scoreNum = this.add.text(32, 64, '   0', { fontSize: '32px', fill: '#000', fontFamily: 'cursive' }).setOrigin(0.5).setScrollFactor(0);
+        this.timeText = this.add.text(cwidth/4, 16, 'Time', { fontSize: '32px', fill: '#000', fontFamily: 'cursive' }).setOrigin(0).setScrollFactor(0);
+        this.timeNum = this.add.text(cwidth/3.35, 64, `${this.timeLeft}`, { fontSize: '32px', fill: '#000', fontFamily: 'cursive' }).setOrigin(0.5).setScrollFactor(0);
+        this.worldText = this.add.text(cwidth/1.5, 16, 'World: 1-1', { fontSize: '32px', fill: '#000', fontFamily: 'cursive' }).setOrigin(0).setScrollFactor(0);
+        this.coinsText = this.add.text(cwidth/1.5, 16, `Coins: ${this.coinz}`, { fontSize: '32px', fill: '#000', fontFamily: 'cursive' }).setOrigin(0).setScrollFactor(0);
         //this.livesText = this.add.text(this.cameras.x, 48, `Lives: ${this.lives}`, { fontSize: '32px', fill: '#000', fontFamily: 'cursive' }).setScrollFactor(0);
 
         //  Collide the player and the stars with the platforms
@@ -297,6 +310,16 @@ class WorldOneLevelOne extends Phaser.Scene {
         console.log(this.sys.game.config.height);
     }
     update() {
+        if(this.timeLeftTimer.getRemaining() == 0){
+            this.timeLeft--;
+            this.timeNum.setText(`${this.timeLeft}`);
+            this.timeLeftTimer.reset({ delay: 1000});    
+        }
+        if(this.timeLeft <= 0){
+            if(!this.playerdead){
+            this.forceKillPlayer();
+            }
+        }
 
         if(this.playerwon){
             this.testForCastle();
@@ -329,7 +352,8 @@ class WorldOneLevelOne extends Phaser.Scene {
         }
         // Spawn a slime enemy (NOT GUARANTEED TO BE IMPLEMENTED!)
         if (Phaser.Input.Keyboard.JustDown(this.oKey)) {
-            this.summonSlime((this.player.x-(this.player.x%60)) + this.grid*2, this.player.y-(this.player.y%60)+this.grid*1);
+            console.log(this.player.x - this.player.x%this.grid);
+            this.summonSlime((this.player.x - this.player.x%this.grid+this.grid*5)/this.grid, (this.player.y - this.player.y%this.grid-this.grid*1)/this.grid);
         }
         // Spawn the bombs (This isn't spawning a bomb on command)
         if (this.bombs.getChildren().length > 0) {
@@ -355,6 +379,7 @@ class WorldOneLevelOne extends Phaser.Scene {
         }
         // Check if the player is touching the ground
         if (this.player.body.touching.down) {
+            this.hasHitGround = true;
             // If so, then reset the double jump
             this.doublejump = true; // allow jump
             // Also reset the ground pound ability
@@ -475,6 +500,7 @@ class WorldOneLevelOne extends Phaser.Scene {
                     }
                     if (this.player.body.touching.down && this.PlayerCanMove) { // If the player is on the ground and can jump
                         this.player.setVelocityY(this.jp * -1);
+                        this.hasHitGround = false;
                     }
                 }
             if (this.cursors.down.isDown) {
@@ -579,6 +605,7 @@ class WorldOneLevelOne extends Phaser.Scene {
             this.killSlime(index);
             // Add a small upward boost to the player
             player.setVelocityY(-200);
+            this.addPoints(100);
         } else {
             console.log("Ouch!");
             this.killPlayer(index);
@@ -587,8 +614,9 @@ class WorldOneLevelOne extends Phaser.Scene {
     }
 
     summonSlime(){
-        const newSlime = this.slime.create(this.player.x + 100, this.player.y, 'slime');
+        const newSlime = this.slime.create(this.player.x+64, this.player.y-50, 'slime');
             newSlime.setSize(18, 16);
+            console.log(newSlime);
             newSlime.onCollide = true;
             newSlime.name = `slime_${this.slimes.length}`;
 
@@ -606,11 +634,10 @@ class WorldOneLevelOne extends Phaser.Scene {
             this.physics.add.collider(this.platforms, newSlime, null, null, this);
             slimeProps.slimecollider = this.physics.add.collider(this.slime.getChildren(), newSlime, null, null, this);
             this.slimes.push(slimeProps);
-            
             // Add this line to store the player-slime collider
             if (!this.playerSlimeColliders) this.playerSlimeColliders = [];
             this.playerSlimeColliders.push(slimeProps.collider);
-
+            console.log(newSlime.x, newSlime.y);
         }
 
         runCastle() {
@@ -670,7 +697,6 @@ class WorldOneLevelOne extends Phaser.Scene {
             this.playerSlimeColliders.push(slimeProps.collider);
             this.slimeindex = this.slime.getChildren().indexOf(newSlime);
             console.log(this.slimeindex);
-
         }
 
         resetPlayerIdleTimeout(){
@@ -695,6 +721,8 @@ class WorldOneLevelOne extends Phaser.Scene {
     slimeWalk(index) {
         const ts = this.slimes[index];
         const slime = this.slime.getChildren()[index];
+
+        try{
         //console.log(index);
         //console.log(ts);
         //console.log(slime);
@@ -711,12 +739,20 @@ class WorldOneLevelOne extends Phaser.Scene {
             this.stopSlime(index);
             });
         }
+        } catch (error) {
+            console.log("Slime died, ignoring function");
+            console.log(error);
+            console.log(slime);
+        }
     }
    stopSlime(index) {
     const slime = this.slime.getChildren()[index];
     const ts = this.slimes[index];
+    try{
     if(!ts.isDead){
+        if(slime != undefined){
     slime.setVelocityX(0);
+        }
     }
     //console.log("slime stop!");
     if(!ts.isDead){
@@ -727,6 +763,11 @@ class WorldOneLevelOne extends Phaser.Scene {
         this.slimeWalk(index);
         });
     }
+} catch (error) {
+    console.log("Slime died, ignoring function");
+    console.log(error);
+    console.log(slime);
+}
 }
     
 
@@ -778,9 +819,29 @@ class WorldOneLevelOne extends Phaser.Scene {
         }
     }
 
+    forceKillPlayer(){
+        console.log("no more tall :(");
+        this.updatePlayerScale(0.5, 0.55);
+        this.physics.world.removeCollider(this.playerslime1collider);
+        this.physics.world.removeCollider(this.playerbombcollider);
+        this.playerdead = false;
+        this.player.setCollideWorldBounds(true);
+        this.playerdead = true;
+        this.player.anims.play('pdie',true);
+        setTimeout(() => {
+            if (this.lives > 1) {
+                this.lives--;
+                this.scene.start("NextLevel", { nextScene: "WorldOneLevelOne", world: 1, level: 1, lives: this.lives });
+            } else if (this.lives == 1) {
+                this.lives--;
+                this.scene.start("NextLevel", { nextScene: "mainMenu", world: 1, level: 1, lives: this.lives });
+            }
+        }, 1000);
 
+    }
 
     killPlayer(index) {
+        try{
         const ts = this.slimes[index];
         console.log(this.phitcd.getRemaining());
         if (this.phitcd.getRemaining() == 0) {
@@ -831,6 +892,10 @@ class WorldOneLevelOne extends Phaser.Scene {
             }
             this.time.addEvent(this.phitcd);
         }
+    } catch (error) {
+        console.log("Something went wrong with killing the player");
+        console.log(error);
+    }
     }
     updatePlayerScale(scaleX, scaleY) {
         this.player.setScale(scaleX, scaleY);
@@ -864,6 +929,7 @@ class WorldOneLevelOne extends Phaser.Scene {
     }
 
     killSlime(index) {
+        try{
         const ts = this.slimes[index];
         const slime = this.slime.getChildren()[index];
         //slimeNum = parseInt(slimeNum.replace('slime', ''));
@@ -885,9 +951,15 @@ class WorldOneLevelOne extends Phaser.Scene {
                         slime.destroy();
                     });                
                         }
+                    }catch (error) {
+                        console.log("Something went wrong with killing the slime");
+                        console.log(error);
                     }
+                }
     EnemyBounce() {
         this.player.setVelocityY(this.jp * -1);
+        this.doublejump = true;
+        console.log(this.hasHitGround);
     }
     PlayerIdle(){
         this.PIdleTO.paused = true;
@@ -916,8 +988,19 @@ class WorldOneLevelOne extends Phaser.Scene {
         //star.disableBody(true, true);
 
         //  Add and update the score
-        this.score += 1;
-        this.scoreText.setText(`Score: ${this.score}`);
+        this.addPoints(200);
+        this.coinamt++;
+        if(this.coinz > 99){
+            this.lives++;
+        }
+    }
+/**
+ * Adds points to the player's score.
+ * @param {number} pts - The number of points to add.
+ */
+    addPoints(pts){
+        this.score += pts;
+        this.scoreNum.setText(`  ${this.score}`);
     }
 
     hitBomb(player, bomb) {
