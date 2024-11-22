@@ -1,3 +1,9 @@
+import { WorldOneLevelOne } from './scenes/WorldOneLevelOne.js';
+import { MainMenu } from './scenes/MainMenu.js';
+import { Preload } from './scenes/Preload.js';
+import { NextLevel } from './scenes/NextLevel.js';
+import { GameStartCutscene } from './scenes/GameStartCutscene.js';
+
 var gameSettings = {
     playerSpeed: 0.25,
 }

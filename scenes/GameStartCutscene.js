@@ -1,4 +1,4 @@
-class GameStartCutscene extends Phaser.Scene {
+export class GameStartCutscene extends Phaser.Scene {
     constructor() {
         super("GameStartCutscene");
     }

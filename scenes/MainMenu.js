@@ -1,4 +1,4 @@
-class MainMenu extends Phaser.Scene {
+export class MainMenu extends Phaser.Scene {
     constructor() {
         super("mainMenu");
         this.key1;
