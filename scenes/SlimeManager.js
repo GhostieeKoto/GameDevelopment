@@ -3,6 +3,7 @@ export class SlimeManager {
         this.scene = scene;
         this.slimes = new Map();
         this.nextId = 0;
+        this.slimeGroup = this.scene.physics.add.group();
     }
 
     createSlime(x, y) {
@@ -20,6 +21,7 @@ export class SlimeManager {
         };
 
         this.slimes.set(id, slimeProps);
+        this.slimeGroup.add(newSlime);
 
         this.addColliders(slimeProps);
         return id;
@@ -35,6 +37,16 @@ export class SlimeManager {
         if (this.scene.player) {
             this.scene.physics.add.collider(slimeProps.sprite, this.scene.player, this.scene.handleMobCollision, null, this.scene);
         }
+        this.scene.physics.add.collider(slimeProps.sprite, this.slimeGroup);
+    }
+
+    addPlayerColliders(slimeProps){
+        this.scene.physics.add.collider(slimeProps.sprite, this.scene.player, this.scene.handleMobCollision, null, this.scene);
+    }
+
+    removeColliders(id) {
+        const slimeProps = this.slimes.get(id);
+        slimeProps.sprite.body.destroy();
     }
 
 

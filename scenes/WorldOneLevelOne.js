@@ -77,6 +77,7 @@ export class WorldOneLevelOne extends Phaser.Scene {
     g = 500;
     hasHitGround = false;
     create() {
+        this.score = 0;
         this.slimeManager = new SlimeManager(this);
         this.timeLeft = 100;
         this.inCutscene = true;
@@ -332,6 +333,7 @@ export class WorldOneLevelOne extends Phaser.Scene {
             this.testForCastle();
         }
 
+        this.checkSlimes();
 
         //console.log(this.PIdleTO.getRemaining());
         //console.log(this.player.body.velocity.x);
@@ -533,9 +535,12 @@ export class WorldOneLevelOne extends Phaser.Scene {
     }
     checkSlimes() {
         this.slimeManager.getAllSlimes().forEach(slime => {
+            //console.log(slime.id);
             if (slime.sprite.y > this.sys.game.config.height) {
                 // If the slime has fallen off the screen, remove it
                 this.slimeManager.removeSlime(slime.id);
+            }else{
+                this.checkSlime(slime.id);
             }
         });
     }
@@ -580,8 +585,9 @@ export class WorldOneLevelOne extends Phaser.Scene {
         }
     }
 
-        handleMobCollision(player, slimeSprite){
+        handleMobCollision(slimeSprite, player){
         console.log("Player collided with slime!");
+        console.log(slimeSprite.name);
         const slimeId = parseInt(slimeSprite.name.split('_')[1]);
         const slime = this.slimeManager.getSlime(slimeId);
         console.log(slimeId, slime);
@@ -597,7 +603,7 @@ export class WorldOneLevelOne extends Phaser.Scene {
             player.setVelocityY(-200);
             this.addPoints(100);
         } else {
-            this.killPlayer();
+            this.killPlayer(slimeId);
         }
     }
 
@@ -755,37 +761,17 @@ export class WorldOneLevelOne extends Phaser.Scene {
 
     }
 
-    killPlayer(index) {
+    killPlayer(id) {
         try {
-            const ts = this.slimes[index];
             console.log(this.phitcd.getRemaining());
             if (this.phitcd.getRemaining() == 0) {
                 if (this.height == 1) {
                     this.playerdead = true;
+                    this.slimeManager.removeColliders(id);
                     console.log("lmao");
-                    if (index !== -1 && index !== undefined) {
-                        console.log(index);
-                        ts.isDead = true;
-                        this.slime.getChildren()[index].body.destroy();
-                        this.player.setVelocityX(this.player.body.velocity.x * -1);
-                        if (this.playerSlimeColliders && this.playerSlimeColliders[index]) {
-                            this.physics.world.removeCollider(this.playerSlimeColliders[index]);
-                            // Optionally, remove it from the array as well
-                            this.playerSlimeColliders.splice(index, 1);
-                        }
-                    } else {
-                        // If no specific index, remove all slime colliders
-                        if (this.playerSlimeColliders) {
-                            this.playerSlimeColliders.forEach(collider => {
-                                this.physics.world.removeCollider(collider);
-                            });
-                            this.playerSlimeColliders = [];
-                        }
-                    }
+                    this.player.setVelocityX(this.player.body.velocity.x * -1);
                     this.physics.world.removeCollider(this.playerbombcollider);
                     this.player.setDepth(100);
-                    //this.player.setVelocityY(this.jp * -1.5);
-                    //this.checkPlayerY();
                     this.player.anims.play('pdie', true);
                     setTimeout(() => {
                         if (this.lives > 1) {
@@ -799,10 +785,10 @@ export class WorldOneLevelOne extends Phaser.Scene {
                 } else if (this.height == 2) {
                     console.log("no more tall :(");
                     this.updatePlayerScale(0.5, 0.55);
-                    this.physics.world.removeCollider(this.playerslimecollider);
+                    //this.physics.world.removeCollider(this.playerslimecollider);
                     this.playerdead = false;
                     this.player.setCollideWorldBounds(true);
-                    this.time.delayedCall(500, this.enablePlayerCollision, [index], this);
+                    this.enablePlayerCollision(id);
                 }
                 this.time.addEvent(this.phitcd);
             }
@@ -816,15 +802,10 @@ export class WorldOneLevelOne extends Phaser.Scene {
         this.height = 1;
         this.playerscaley = 0;
     }
-    enablePlayerCollision(index) {
-        if (this.playerSlimeColliders && this.playerSlimeColliders[index]) {
-            this.physics.world.removeCollider(this.playerSlimeColliders[index]);
-            // Optionally, remove it from the array as well
-            this.playerSlimeColliders.splice(index, 1);
-        }
-this.height = 1;
-        this.playerscaley = 0;
-        this.player.setScale(0.5, 0.55);
+    enablePlayerCollision(id) {
+        const slime = this.slimeManager.getSlime(id);
+        if(!slime || slime.isDead) return;
+        this.slimeManager.addPlayerColliders(slime);
     }
     checkPlayerY() {
         this.player.setVelocityX(0);
@@ -848,6 +829,7 @@ this.height = 1;
     killSlime(id) {
         const slime = this.slimeManager.getSlime(id);
         if(!slime || slime.isDead) return;
+        this.slimeManager.removeColliders(id);
 
         slime.isDead = true;
         slime.sprite.anims.play('sdeath');

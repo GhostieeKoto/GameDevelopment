@@ -2,6 +2,7 @@ export class MainMenu extends Phaser.Scene {
     constructor() {
         super("mainMenu");
         this.key1;
+        this.lives = 3;
     }
 
     scoreText;
@@ -136,7 +137,7 @@ export class MainMenu extends Phaser.Scene {
     {
 
         if (Phaser.Input.Keyboard.JustDown(this.key1)) {
-            this.scene.start("WorldOneLevelOne");
+            this.scene.start("NextLevel", { nextScene: "WorldOneLevelOne", world: 1, level: 1, lives: this.lives });
         }
 
         //this.platforms.create(this.player.x, 500, 'ground').setScale(1).refreshBody();
