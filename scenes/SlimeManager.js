@@ -6,15 +6,19 @@ export class SlimeManager {
         this.slimeGroup = this.scene.physics.add.group();
     }
 
-    createSlime(x, y) {
+    createSlime(x, y, size) {
         const id = this.nextId++;
+        const slimeSize = size !== undefined ? size : 1;
+        console.log(slimeSize);
         const newSlime = this.scene.physics.add.sprite(x, y, 'slime');
         newSlime.setSize(18, 16);
+        newSlime.setScale(slimeSize, slimeSize);
         newSlime.name = `slime_${id}`;
 
         const slimeProps = {
             id,
             sprite: newSlime,
+            size: slimeSize,
             isDead: false,
             isWalking: true,
             isJumping: false
@@ -47,6 +51,21 @@ export class SlimeManager {
     removeColliders(id) {
         const slimeProps = this.slimes.get(id);
         slimeProps.sprite.body.destroy();
+    }
+
+    splitSlime(id) {
+        const slimeProps = this.slimes.get(id);
+        const splitSize = Math.round(Math.random() * 4) + 1;
+        if (slimeProps.size > 1){
+            const newSize = slimeProps.size - 0.5;
+            const newX = slimeProps.sprite.x +  (18 * (slimeProps.size - newSize)) / 2;
+            for(let i = 0; i < splitSize; i++){
+            this.createSlime((Math.round(Math.random()*20)-(Math.round(Math.random()*40)))+newX, slimeProps.sprite.y, newSize);
+            }
+            slimeProps.size = newSize;
+            this.addColliders(slimeProps);
+        }
+        this.removeSlime(id);
     }
 
 

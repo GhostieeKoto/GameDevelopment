@@ -76,7 +76,10 @@ export class WorldOneLevelOne extends Phaser.Scene {
     pspeed = 320;
     g = 500;
     hasHitGround = false;
+    cantgrow = false;
     create() {
+        this.PlayerCanMove = true;
+        this.cantgrow = false;
         this.score = 0;
         this.slimeManager = new SlimeManager(this);
         this.timeLeft = 100;
@@ -177,9 +180,11 @@ export class WorldOneLevelOne extends Phaser.Scene {
         // The player and its settings
         this.player = this.physics.add.sprite(0, 450, 'idle');
         this.lbplr = this.physics.add.sprite(0, 450, 'air');
+        this.duckscan = this.physics.add.sprite(0, 450, 'air');
         this.playerscaley = 0;
         this.player.name = 'player';
         this.lbplr.name = 'lbplr';
+        this.duckscan.name = 'duckscan';
         //this.player.setSize(26, 35);
         //this.player.setOffset(3, -2);
         this.player.setSize(60, 54);
@@ -190,23 +195,39 @@ export class WorldOneLevelOne extends Phaser.Scene {
         this.lbplr.setOffset(0, -10);
         this.lbplr.body.setAllowGravity(false);
         this.lbplr.body.onCollide = true;
+        this.duckscan.setSize(15, 5);
+        this.duckscan.setOffset(0, -10);
+        this.duckscan.body.setAllowGravity(false);
+        this.duckscan.body.onCollide = true;
         this.player.body.onCollide = false;
 
 
-        /*        this.physics.world.on('collide', (gameObject1, gameObject2, body1, body2) =>
+                this.physics.world.on('collide', (object1, object2, body1, body2) =>
                     {
-                        if(gameObject2.name.includes("LuckyBlock") && gameObject1.name.includes("player")){
-                        console.log(gameObject1.body.touching.up);
-                        if(gameObject1.body.touching.up && gameObject2.body.touching.down){
-                            this.hitLuckyBlock(gameObject2.name);
+                        let obj1top = object1.getBounds().top;
+                        let obj1btm = object1.getBounds().bottom;
+                        let obj2btm = object2.getBounds().bottom;
+                        let obj2top = object2.getBounds().top;
+                
+                        //console.log(object1.name);
+                        //console.log(object2.name);
+                        //console.log(obj1top, obj2btm);
+                
+                        if (obj1top >= obj2btm && object1.name.includes("lbplr")) {
+                            console.log('Top of the hitbox hits the lucky block!');
+                            this.hitLuckyBlock(object2.name);
                         }
+                        if (obj1top <= obj2btm && object1.name.includes("duckscan")) {
+                            //console.log('Block above you isn\'t air');
+                            this.cantgrow = true;
+                            //this.hitLuckyBlock(object2.name);
                         }
-                        if(gameObject1.name.includes("player")){
-                            this.go2 = gameObject2.name;
-                            console.log(gameObject2.name);
+                        if (obj1top >= obj2btm && object1.name.includes("lbplr") && object2.name.includes("Brick") && !this.playerdead) {
+                            console.log('Top of the hitbox hits the lucky block!');
+                            this.breakBrick(object2);
                         }
                     });
-        */
+    
         //  Player physics ts. Give the little guy a slight bounce.
         this.player.setBounce(0.15);
         this.player.setCollideWorldBounds(true);
@@ -301,6 +322,7 @@ export class WorldOneLevelOne extends Phaser.Scene {
         this.playerflag2collider = this.physics.add.overlap(this.player, this.zones, this.runCastle, null, this);
         this.playercastlecollider = this.physics.add.overlap(this.player, this.castle, this.enterCastle, null, this);
         this.physics.add.overlap(this.lbplr, this.luckyblocks, this.handleCollision, null, this);
+        this.physics.add.collider(this.duckscan, this.platforms, this.handleCollision, null, this);
         this.physics.add.overlap(this.player, this.platforms, this.handleCollision, null, this);
         this.playerluckyblockcollider = this.physics.add.collider(this.player, this.luckyblocks, this.handleCollision, null, this);
         this.playerluckyblockcollider2 = this.physics.add.collider(this.lbplr, this.luckyblocks, this.handleCollision, null, this);
@@ -337,7 +359,7 @@ export class WorldOneLevelOne extends Phaser.Scene {
 
         //console.log(this.PIdleTO.getRemaining());
         //console.log(this.player.body.velocity.x);
-        if (!this.cursors.down.isDown && this.height == 2 && !this.playerwon) {
+        if (!this.cursors.down.isDown && this.height == 2 && !this.playerwon && !this.cantgrow) {
             this.player.setScale(0.5, 1);
             if (!this.playerfixed) {
                 this.player.y -= 10;
@@ -359,7 +381,7 @@ export class WorldOneLevelOne extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(this.rKey)) {
             this.scene.start("WorldOneLevelOne");
         }
-        // Spawn a slime enemy (NOT GUARANTEED TO BE IMPLEMENTED!)
+        // Spawn a slime enemy
         if (Phaser.Input.Keyboard.JustDown(this.oKey)) {
             console.log(this.player.x - this.player.x % this.grid);
             this.summonSlime((this.player.x - this.player.x % this.grid + this.grid * 5) / this.grid, (this.player.y - this.player.y % this.grid - this.grid * 1) / this.grid);
@@ -396,6 +418,7 @@ export class WorldOneLevelOne extends Phaser.Scene {
             // if on ground then start idle timer
         }
 
+
         // This weirdly actually works lmao.
         // This just adds a hitbox at the top of the player so it can
         // detect if the top of the player hits a luckyblock
@@ -405,6 +428,8 @@ export class WorldOneLevelOne extends Phaser.Scene {
         // when we completely switch assets.
         this.lbplr.x = this.player.x;
         this.lbplr.y = this.player.y - this.playerscaley; // Account for if the player is big
+        this.duckscan.x = this.player.x;
+        this.duckscan.y = (this.player.y-(this.player.y%this.grid)) - this.playerscaley; // Account for if the player is big
         //console.log(this.go2);
 
         // Prevent player from doing anything while still in the cutscene
@@ -470,13 +495,13 @@ export class WorldOneLevelOne extends Phaser.Scene {
             }
             else {
                 if (this.player.body.velocity.x > 1) {
-                    this.player.setVelocityX(this.player.body.velocity.x - (this.deceleration / 100 * this.player.body.velocity.x));
+                    this.player.setVelocityX(this.player.body.velocity.x - (this.deceleration / 150 * this.player.body.velocity.x));
                 } else if (this.player.body.velocity.x < 1 && this.player.body.velocity.x > 0) {
                     this.player.setVelocityX(0);
                 }
 
                 if (this.player.body.velocity.x < -1) {
-                    this.player.setVelocityX(this.player.body.velocity.x - (this.deceleration / 100 * this.player.body.velocity.x));
+                    this.player.setVelocityX(this.player.body.velocity.x - (this.deceleration / 150 * this.player.body.velocity.x));
                 } else if (this.player.body.velocity.x > -1 && this.player.body.velocity.x < 0) {
                     this.player.setVelocityX(0);
                 }
@@ -486,14 +511,14 @@ export class WorldOneLevelOne extends Phaser.Scene {
 
             if (Phaser.Input.Keyboard.JustDown(this.cursors.up)) // If the player presses the jump button
             {
-                console.log("a");
+                //console.log("a");
                 this.resetPlayerIdleTimeout();
-                if (!this.playerdead && this.PlayerCanMove) { // If the player isn't dead
-                    console.log("b");
-                    console.log("Player Body Touching Down: ", this.player.body.touching.down);
-                    console.log("Double Jump: ", this.doublejump);
+                if (!this.playerdead) { // If the player isn't dead
+                    //console.log("b");
+                    //console.log("Player Body Touching Down: ", this.player.body.touching.down);
+                    //console.log("Double Jump: ", this.doublejump);
                     if (!this.player.body.touching.down && this.doublejump) { // If the player is not on the ground
-                        console.log("c");
+                        //console.log("c");
                         this.player.setVelocityY(this.jp * -1); // then double jump
                         this.doublejump = false; // Allow jump
                         if (this.gpound) { // if the player hasn't hit the down arrow
@@ -503,7 +528,7 @@ export class WorldOneLevelOne extends Phaser.Scene {
                         }
                     }
                 }
-                if (this.player.body.touching.down && this.PlayerCanMove) { // If the player is on the ground and can jump
+                if (this.player.body.touching.down) { // If the player is on the ground and can jump
                     this.player.setVelocityY(this.jp * -1);
                     this.hasHitGround = false;
                 }
@@ -569,20 +594,6 @@ export class WorldOneLevelOne extends Phaser.Scene {
 
     handleBlockCollision(object1, object2) {
 
-        let obj1top = object1.getBounds().top;
-        let obj1btm = object1.getBounds().bottom;
-        let obj2btm = object2.getBounds().bottom;
-        let obj2top = object2.getBounds().top;
-
-
-        if (obj1top >= obj2btm && object1.name.includes("lbplr")) {
-            console.log('Top of the hitbox hits the lucky block!');
-            this.hitLuckyBlock(object2.name);
-        }
-        if (obj1top >= obj2btm && object1.name.includes("lbplr") && object2.name.includes("Brick") && !this.playerdead) {
-            console.log('Top of the hitbox hits the lucky block!');
-            this.breakBrick(object2);
-        }
     }
 
         handleMobCollision(slimeSprite, player){
@@ -608,7 +619,7 @@ export class WorldOneLevelOne extends Phaser.Scene {
     }
 
     summonSlime(x, y) {
-        const slimeID = this.slimeManager.createSlime(this.grid*x, this.grid*y);
+        this.slimeManager.createSlime(this.grid*x, this.grid*y, 1.5);
     }
 
     runCastle() {
@@ -724,6 +735,9 @@ export class WorldOneLevelOne extends Phaser.Scene {
         if (!brick.name.includes("LuckyBlock")) {
             if (this.height == 2) {
                 brick.destroy();
+                if(this.cantgrow) {
+                    this.cangrow = false;
+                }
             } else if (this.height == 1) {
                 if (!brick.isAnimating) {
                     brick.isAnimating = true;
@@ -835,7 +849,7 @@ export class WorldOneLevelOne extends Phaser.Scene {
         slime.sprite.anims.play('sdeath');
         this.EnemyBounce();
         this.time.delayedCall(500, () => {
-            this.slimeManager.removeSlime(id);
+            this.slimeManager.splitSlime(id);
         });
     }
 
@@ -854,6 +868,7 @@ export class WorldOneLevelOne extends Phaser.Scene {
         if (star != null) {
             star.body.setAllowGravity(false);
             star.y += 500;
+            this.addPoints(1000);
         }
         //star.disableBody(true, true);
 
