@@ -78,6 +78,8 @@ export class WorldOneLevelOne extends Phaser.Scene {
     hasHitGround = false;
     cantgrow = false;
     create() {
+        this.dsbrick = null;
+        this.size = 1;
         this.PlayerCanMove = true;
         this.cantgrow = false;
         this.score = 0;
@@ -153,12 +155,12 @@ export class WorldOneLevelOne extends Phaser.Scene {
         //  Now let's create some ledges
         this.platforms.create(this.grid * 15, 400, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
         this.platforms.create(this.grid * 17, 400, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
-        this.platforms.create(this.grid * 25, 468, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
-        this.platforms.create(this.grid * 25, 436, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
-        this.platforms.create(this.grid * 25, 404, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
-        this.platforms.create(this.grid * 24, 404, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
-        this.platforms.create(this.grid * 23, 404, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
-        this.platforms.create(this.grid * 24, 436, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
+        this.platforms.create(this.grid * 24, 388, 'ground').setScale(1, 6).setDepth(10).refreshBody().name = "Brick";
+        //this.platforms.create(this.grid * 24, 436, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
+        //this.platforms.create(this.grid * 24, 372, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
+        //this.platforms.create(this.grid * 24, 404, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
+        //this.platforms.create(this.grid * 24, 340, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
+        //this.platforms.create(this.grid * 24, 308, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
         this.zones.create(this.grid * 60, this.grid * 15, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
 
 
@@ -209,22 +211,21 @@ export class WorldOneLevelOne extends Phaser.Scene {
                         let obj2btm = object2.getBounds().bottom;
                         let obj2top = object2.getBounds().top;
                 
-                        //console.log(object1.name);
-                        //console.log(object2.name);
+                        //console.log(object1.name, object2.name);
                         //console.log(obj1top, obj2btm);
                 
                         if (obj1top >= obj2btm && object1.name.includes("lbplr")) {
                             console.log('Top of the hitbox hits the lucky block!');
                             this.hitLuckyBlock(object2.name);
                         }
-                        if (obj1top <= obj2btm && object1.name.includes("duckscan")) {
-                            //console.log('Block above you isn\'t air');
-                            this.cantgrow = true;
-                            //this.hitLuckyBlock(object2.name);
-                        }
                         if (obj1top >= obj2btm && object1.name.includes("lbplr") && object2.name.includes("Brick") && !this.playerdead) {
                             console.log('Top of the hitbox hits the lucky block!');
                             this.breakBrick(object2);
+                        }
+                        if (obj1top <= obj2btm && object1.name.includes("duckscan") && object2.name.includes("Brick")) {
+                            //console.log('Top of the hitbox hits the lucky block!');
+                            this.dsbrick = object2;
+                            //this.breakBrick(object2);
                         }
                     });
     
@@ -316,16 +317,16 @@ export class WorldOneLevelOne extends Phaser.Scene {
         this.physics.add.collider(this.stars, this.luckyblocks);
         this.physics.add.collider(this.coins, this.platforms);
         this.physics.add.collider(this.coins, this.luckyblocks);
-        this.playergroundcollider = this.physics.add.collider(this.player, this.platforms, this.handleCollision, null, this);
-        this.playergroundcollider2 = this.physics.add.collider(this.lbplr, this.platforms, this.handleCollision, null, this);
+        this.playergroundcollider = this.physics.add.collider(this.player, this.platforms, null, null, this);
+        this.playergroundcollider2 = this.physics.add.collider(this.lbplr, this.platforms, null, null, this);
         this.playerflagcollider = this.physics.add.overlap(this.player, this.flag, this.winLevel, null, this);
         this.playerflag2collider = this.physics.add.overlap(this.player, this.zones, this.runCastle, null, this);
         this.playercastlecollider = this.physics.add.overlap(this.player, this.castle, this.enterCastle, null, this);
-        this.physics.add.overlap(this.lbplr, this.luckyblocks, this.handleCollision, null, this);
-        this.physics.add.collider(this.duckscan, this.platforms, this.handleCollision, null, this);
-        this.physics.add.overlap(this.player, this.platforms, this.handleCollision, null, this);
-        this.playerluckyblockcollider = this.physics.add.collider(this.player, this.luckyblocks, this.handleCollision, null, this);
-        this.playerluckyblockcollider2 = this.physics.add.collider(this.lbplr, this.luckyblocks, this.handleCollision, null, this);
+        this.physics.add.overlap(this.lbplr, this.luckyblocks, null, null, this);
+        this.physics.add.collider(this.duckscan, this.platforms, null, null, this);
+        this.physics.add.overlap(this.player, this.platforms, null, null, this);
+        this.playerluckyblockcollider = this.physics.add.collider(this.player, this.luckyblocks, null, null, this);
+        this.playerluckyblockcollider2 = this.physics.add.collider(this.lbplr, this.luckyblocks, null, null, this);
         this.physics.add.collider(this.bombs, this.platforms);
         
         //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
@@ -338,8 +339,11 @@ export class WorldOneLevelOne extends Phaser.Scene {
         console.log("create done!");
         this.PIdleTO.paused = false;
         console.log(this.sys.game.config.height);
+        this.canbreakbrick = true;
     }
     update() {
+        this.testDuckScan();
+        //console.log(this.cantgrow);
         if (this.timeLeftTimer.getRemaining() == 0 && !this.playerwon) {
             this.timeLeft--;
             this.timeNum.setText(`${this.timeLeft}`);
@@ -354,13 +358,13 @@ export class WorldOneLevelOne extends Phaser.Scene {
         if (this.playerwon) {
             this.testForCastle();
         }
-
         this.checkSlimes();
 
         //console.log(this.PIdleTO.getRemaining());
         //console.log(this.player.body.velocity.x);
-        if (!this.cursors.down.isDown && this.height == 2 && !this.playerwon && !this.cantgrow) {
+        if (!this.cursors.down.isDown && this.height == 2 && !this.playerwon && !this.cantgrow && this.player.body.touching.down) {
             this.player.setScale(0.5, 1);
+            this.size = 2;
             if (!this.playerfixed) {
                 this.player.y -= 10;
                 this.playerfixed = true;
@@ -376,6 +380,7 @@ export class WorldOneLevelOne extends Phaser.Scene {
         // Pretend you just collected a star
         if (Phaser.Input.Keyboard.JustDown(this.pKey)) {
             this.collectStar(null, null);
+            this.size = 2;
         }
         // Restart Scene
         if (Phaser.Input.Keyboard.JustDown(this.rKey)) {
@@ -406,6 +411,7 @@ export class WorldOneLevelOne extends Phaser.Scene {
         }
         // Check if the player is touching the ground
         if (this.player.body.touching.down) {
+            this.canbreakbrick = true;
             this.hasHitGround = true;
             // If so, then reset the double jump
             this.doublejump = true; // allow jump
@@ -530,7 +536,10 @@ export class WorldOneLevelOne extends Phaser.Scene {
                 }
                 if (this.player.body.touching.down) { // If the player is on the ground and can jump
                     this.player.setVelocityY(this.jp * -1);
-                    this.hasHitGround = false;
+                    if(this.cantgrow && this.size == 1){
+                    this.breakBrick(this.dsbrick);
+                    this.size = 2;   
+                    }
                 }
             }
             if (this.cursors.down.isDown) {
@@ -550,6 +559,7 @@ export class WorldOneLevelOne extends Phaser.Scene {
                         }
                     } else if (this.height == 2) {
                         this.player.setScale(0.5, 0.55);
+                        this.size = 1;
                         this.playerfixed = false;
                         this.PlayerCanMove = false;
                         this.playerscaley = 0;
@@ -557,6 +567,15 @@ export class WorldOneLevelOne extends Phaser.Scene {
                 }
             }
         }
+    }
+
+    testDuckScan(){
+        this.cantgrow = false;
+
+        this.physics.overlap(this.duckscan, this.platforms, (duckscan, brick) => {
+            this.cantgrow = true
+            return brick;
+        });
     }
     checkSlimes() {
         this.slimeManager.getAllSlimes().forEach(slime => {
@@ -595,7 +614,6 @@ export class WorldOneLevelOne extends Phaser.Scene {
     handleBlockCollision(object1, object2) {
 
     }
-
         handleMobCollision(slimeSprite, player){
         console.log("Player collided with slime!");
         console.log(slimeSprite.name);
@@ -730,14 +748,14 @@ export class WorldOneLevelOne extends Phaser.Scene {
     }
 
     breakBrick(brick) {
+        console.log(this.cantgrow, "<-- Current cantgrow state");
         console.log(brick);
         this.tbrick = brick;
         if (!brick.name.includes("LuckyBlock")) {
             if (this.height == 2) {
                 brick.destroy();
-                if(this.cantgrow) {
-                    this.cangrow = false;
-                }
+                this.canbreakbrick = false;
+                this.player.body.velocity.y = this.player.body.velocity.y*0.25;
             } else if (this.height == 1) {
                 if (!brick.isAnimating) {
                     brick.isAnimating = true;
@@ -781,12 +799,13 @@ export class WorldOneLevelOne extends Phaser.Scene {
             if (this.phitcd.getRemaining() == 0) {
                 if (this.height == 1) {
                     this.playerdead = true;
-                    this.slimeManager.removeColliders(id);
+                    //this.slimeManager.removeColliders(id);
                     console.log("lmao");
                     this.player.setVelocityX(this.player.body.velocity.x * -1);
                     this.physics.world.removeCollider(this.playerbombcollider);
-                    this.player.setDepth(100);
+                    //this.player.setDepth(100);
                     this.player.anims.play('pdie', true);
+                    this.player.body.destroy();
                     setTimeout(() => {
                         if (this.lives > 1) {
                             this.lives--;

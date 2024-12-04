@@ -135,7 +135,6 @@ export class MainMenu extends Phaser.Scene {
 
     update ()
     {
-
         if (Phaser.Input.Keyboard.JustDown(this.key1)) {
             this.scene.start("NextLevel", { nextScene: "WorldOneLevelOne", world: 1, level: 1, lives: this.lives });
         }
