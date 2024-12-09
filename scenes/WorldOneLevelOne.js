@@ -155,18 +155,18 @@ export class WorldOneLevelOne extends Phaser.Scene {
         //  Now let's create some ledges
         this.platforms.create(this.grid * 15, 400, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
         this.platforms.create(this.grid * 17, 400, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
-        this.platforms.create(this.grid * 24, 388, 'ground').setScale(1, 6).setDepth(10).refreshBody().name = "Brick";
-        //this.platforms.create(this.grid * 24, 436, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
-        //this.platforms.create(this.grid * 24, 372, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
-        //this.platforms.create(this.grid * 24, 404, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
+        //this.platforms.create(this.grid * 24, 388, 'ground').setScale(1, 6).setDepth(10).refreshBody().name = "Brick";
+        //this.platforms.create(this.grid * 25, 436, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
+        //this.platforms.create(this.grid * 26, 372, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
+        //this.platforms.create(this.grid * 23, 404, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
         //this.platforms.create(this.grid * 24, 340, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
-        //this.platforms.create(this.grid * 24, 308, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
+        //this.platforms.create(this.grid * 25, 308, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
         this.zones.create(this.grid * 60, this.grid * 15, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
-
+        
 
         // Create the castle
         this.castle = this.end.create(this.grid * 70, 300, 'castle');
-        this.flag = this.flag.create(this.grid * 60, this.grid * 12, 'flag');
+        this.flag = this.flag.create(this.grid * 60, this.grid * 11.5, 'flag');
         this.castle.name = 'Castle';
         this.castle.setSize(37, 75);
         this.castle.setOffset(225, 390);
@@ -374,7 +374,7 @@ export class WorldOneLevelOne extends Phaser.Scene {
         }
         // Dev Cheats
         if (Phaser.Input.Keyboard.JustDown(this.key1)) {
-            this.player.x = 2000;
+            this.player.x = this.flag.x - this.grid*3;
         }
 
         // Pretend you just collected a star
@@ -660,7 +660,9 @@ export class WorldOneLevelOne extends Phaser.Scene {
     enterCastle() {
         this.oncastle = true;
         console.log("You entered the castle!");
+        this.playerwon.true;
         this.player.setVelocityY(0);
+        this.player.setVelocityX(0);
         setTimeout(() => {
             this.player.setVisible(false);
             this.player.setVelocityX(0);
@@ -668,6 +670,7 @@ export class WorldOneLevelOne extends Phaser.Scene {
             if (!this.playerhidden) {
                 this.player.y -= 100;
                 this.playerhidden = true;
+
             }
         }, 1000);
     }
