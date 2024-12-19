@@ -7,6 +7,7 @@ export class WorldOneLevelOne extends Phaser.Scene {
         this.pKey;
         this.oKey;
         this.rKey;
+        this.key2;
         this.slimeManager = null;
         this.key1;
         this.acceleration = 10; // Acceleration rate
@@ -78,6 +79,7 @@ export class WorldOneLevelOne extends Phaser.Scene {
     hasHitGround = false;
     cantgrow = false;
     create() {
+
         this.dsbrick = null;
         this.size = 1;
         this.PlayerCanMove = true;
@@ -92,7 +94,7 @@ export class WorldOneLevelOne extends Phaser.Scene {
         this.lb3used = false;
         //alert("Game Started");
         // Create the camera
-        this.cameras.main.setSize(window.innerWidth, window.innerHeight);
+        this.cam = this.cameras.main.setSize(window.innerWidth, window.innerHeight);
         //  A simple background for our game
         this.sky = this.add.tileSprite(200, 200, 400, 600, 'sky').setScale(1000);
         //alert("Background Made");
@@ -132,17 +134,14 @@ export class WorldOneLevelOne extends Phaser.Scene {
         //this.winlevel = this.physics.add.staticGroup();
         this.PIdleTO = new Phaser.Time.TimerEvent({ delay: 2000 });
         this.phitcd = new Phaser.Time.TimerEvent({ delay: 500 });
-        this.stopvibrating = new Phaser.Time.TimerEvent({ delay: 25 });
-        this.time.addEvent(this.stopvibrating);
-        this.stopvibrating.paused = false;
         this.time.addEvent(this.phitcd);
         this.phitcd.paused = false;
         this.time.addEvent(this.PIdleTO);
         this.PIdleTO.paused = true;
         //  Here we create the ground.
         //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-        this.ground = this.platforms.create(0, 500, 'ground').setScale(1000, 1).refreshBody();
-        this.ground2 = this.platforms.create(0, 590, 'ground').setScale(1000, 5).refreshBody();
+        this.ground = this.platforms.create(0, this.grid*15, 'ground').setScale(1000, 1).refreshBody();
+        this.ground2 = this.platforms.create(0, this.grid*20, 'ground').setScale(1000, 10).refreshBody();
         this.ground.setDepth(10);
         this.ground2.setDepth(10);
         this.ground.name = 'ground';
@@ -153,20 +152,20 @@ export class WorldOneLevelOne extends Phaser.Scene {
         this.time.addEvent(this.timeLeftTimer);
 
         //  Now let's create some ledges
-        this.platforms.create(this.grid * 15, 400, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
-        this.platforms.create(this.grid * 17, 400, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
-        //this.platforms.create(this.grid * 24, 388, 'ground').setScale(1, 6).setDepth(10).refreshBody().name = "Brick";
-        //this.platforms.create(this.grid * 25, 436, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
+        this.platforms.create(this.grid * 15, this.grid*12, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
+        this.platforms.create(this.grid * 17, this.grid*12, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
+        this.platforms.create(this.grid * 23, this.grid*14, 'ground').setScale(2, 1).setDepth(10).refreshBody().name = "Brick";
+        this.platforms.create(this.grid * 23, this.grid*13, 'ground').setScale(2.5, 1).setDepth(10).refreshBody().name = "Brick";
         //this.platforms.create(this.grid * 26, 372, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
         //this.platforms.create(this.grid * 23, 404, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
         //this.platforms.create(this.grid * 24, 340, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
         //this.platforms.create(this.grid * 25, 308, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
-        this.zones.create(this.grid * 60, this.grid * 15, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "Brick";
         
 
         // Create the castle
-        this.castle = this.end.create(this.grid * 70, 300, 'castle');
-        this.flag = this.flag.create(this.grid * 60, this.grid * 11.5, 'flag');
+        this.castle = this.end.create(this.grid * 270, 300, 'castle');
+        this.flag = this.flag.create(this.grid * 260, this.grid * 11.5, 'flag');
+        this.zones.create(this.flag.x, this.grid * 15, 'ground').setScale(1, 1).setDepth(10).refreshBody().name = "FlagBase";
         this.castle.name = 'Castle';
         this.castle.setSize(37, 75);
         this.castle.setOffset(225, 390);
@@ -180,9 +179,9 @@ export class WorldOneLevelOne extends Phaser.Scene {
 
 
         // The player and its settings
-        this.player = this.physics.add.sprite(0, 450, 'idle');
-        this.lbplr = this.physics.add.sprite(0, 450, 'air');
-        this.duckscan = this.physics.add.sprite(0, 450, 'air');
+        this.player = this.physics.add.sprite(0, this.grid*14, 'idle');
+        this.lbplr = this.physics.add.sprite(0, 0, 'air');
+        this.duckscan = this.physics.add.sprite(0, 0, 'air');
         this.playerscaley = 0;
         this.player.name = 'player';
         this.lbplr.name = 'lbplr';
@@ -235,25 +234,23 @@ export class WorldOneLevelOne extends Phaser.Scene {
         this.playerdead = false;
         this.playerwon = false;
 
-        // Start Camera Following
-        this.cameras.main.startFollow(this.player);
-        //alert("Camera Followed");
-
 
         //  Input Events
-        this.cameras.main.startFollow(this.player, true);
-        this.cameras.main.setBounds(0, 0, 999999999, 0);
-        this.physics.world.setBounds(0, 0, 5000, 1000);
+        this.cameras.main.setBounds(0, 0, 50000, 2500);
+        this.physics.world.setBounds(0, 0, 50000, 2500);
         this.cursors = this.input.keyboard.createCursorKeys();
         this.pKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
         this.oKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.O);
         this.rKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
         this.key1 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ONE);
+        this.key2 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TWO);
 
-        this.cameras.main.followOffset.set(0, 0);
-
-        this.cameras.main.setDeadzone(200, 350);
+        
+        this.cameras.main.setDeadzone(0, 250);
+        this.cameras.main.startFollow(this.player);
         this.cameras.main.setZoom(1);
+        
+        
         //  Some stars to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
         this.stars = this.physics.add.group({
             defaultKey: 'star',
@@ -280,18 +277,18 @@ export class WorldOneLevelOne extends Phaser.Scene {
         // ... (rest of the existing code)
         // Lucky Block Stuff
 
-        this.lb1coin = this.coins.create(this.grid * 11, 400).setScale(1.25).anims.play('cspin', true).setOffset(0, 2);
-        this.lb2coin = this.coins.create(this.grid * 16, 400).setScale(1.25).anims.play('cspin', true).setOffset(0, 2);
-        this.lb3star = this.stars.create(this.grid * 16, 300);
+        this.lb1coin = this.coins.create(this.grid * 11, this.grid*12).setScale(1.25).anims.play('cspin', true).setOffset(0, 2);
+        this.lb2coin = this.coins.create(this.grid * 16, this.grid*12).setScale(1.25).anims.play('cspin', true).setOffset(0, 2);
+        this.lb3star = this.stars.create(this.grid * 16, this.grid*9);
         this.lb1coin.body.setAllowGravity(false);
         this.lb2coin.body.setAllowGravity(false);
         this.lb3star.body.setAllowGravity(false);
         this.lb1coin.name = "lb1coin";
         this.lb2coin.name = "lb2coin";
         this.lb3star.name = "lb3star";
-        this.lb1 = this.luckyblocks.create(this.grid * 11, 400, 'block');
-        this.lb2 = this.luckyblocks.create(this.grid * 16, 400, 'block');
-        this.lb3 = this.luckyblocks.create(this.grid * 16, 300, 'block');
+        this.lb1 = this.luckyblocks.create(this.grid * 11, this.grid*12, 'block');
+        this.lb2 = this.luckyblocks.create(this.grid * 16, this.grid*12, 'block');
+        this.lb3 = this.luckyblocks.create(this.grid * 16, this.grid*9, 'block');
         this.lb1.name = "LuckyBlock1";
         this.lb1.body.onOverlap = true;
         this.lb2.name = "LuckyBlock2";
@@ -310,7 +307,6 @@ export class WorldOneLevelOne extends Phaser.Scene {
         this.timeNum = this.add.text(cwidth / 3.35, 64, `${this.timeLeft}`, { fontSize: '32px', fill: '#000', fontFamily: 'cursive' }).setOrigin(0.5).setScrollFactor(0);
         this.worldText = this.add.text(cwidth / 1.5, 16, 'World: 1-1', { fontSize: '32px', fill: '#000', fontFamily: 'cursive' }).setOrigin(0).setScrollFactor(0);
         this.coinsText = this.add.text(cwidth / 1.5, 16, `Coins: ${this.coinz}`, { fontSize: '32px', fill: '#000', fontFamily: 'cursive' }).setOrigin(0).setScrollFactor(0);
-        //this.livesText = this.add.text(this.cameras.x, 48, `Lives: ${this.lives}`, { fontSize: '32px', fill: '#000', fontFamily: 'cursive' }).setScrollFactor(0);
 
         //  Collide the player and the stars with the platforms
         this.physics.add.collider(this.stars, this.platforms);
@@ -340,8 +336,10 @@ export class WorldOneLevelOne extends Phaser.Scene {
         this.PIdleTO.paused = false;
         console.log(this.sys.game.config.height);
         this.canbreakbrick = true;
+
     }
     update() {
+        
         this.testDuckScan();
         //console.log(this.cantgrow);
         if (this.timeLeftTimer.getRemaining() == 0 && !this.playerwon) {
@@ -375,6 +373,10 @@ export class WorldOneLevelOne extends Phaser.Scene {
         // Dev Cheats
         if (Phaser.Input.Keyboard.JustDown(this.key1)) {
             this.player.x = this.flag.x - this.grid*3;
+            //this.enteredpipe = true;
+        }
+        if (Phaser.Input.Keyboard.JustDown(this.key2)) {
+            this.player.y = this.ground.y + this.grid*3;
         }
 
         // Pretend you just collected a star
@@ -444,7 +446,7 @@ export class WorldOneLevelOne extends Phaser.Scene {
             this.player.setVelocityX(320);
         } else {  // But make sure that you collide with world bounds ONLY IF NOT DEAD
             if (!this.playerdead) {
-                this.player.setCollideWorldBounds(true);
+                //this.player.setCollideWorldBounds(true);
             }
             //this.player.setVelocityX(0); // Set velocity to 0 if on the ground. This shouldn't work, but it does.
             this.inCutscene = false; // Makes it so that the player can do stuff
@@ -453,16 +455,6 @@ export class WorldOneLevelOne extends Phaser.Scene {
             // But the background is a solid color xd
 
             // Make the camera move only if the player is moving towards the side of the screen
-            const cam = this.cameras.main; // Create the camera
-
-            if (cam.deadzone) // I THINK this checks if the player is outside of the camera's deadzone
-            {
-                this.moveCam;
-            }
-            else if (cam._tb) // Actually never mind, I have no clue what this is. This was in the project by default so I'm assuming it's what moves the camera
-            {
-                this.moveCam;
-            }
 
 
             this.physics.world.gravity.y = this.g; // Ensure earth's core hasn't suddenly disappeared. (gravity xd)
@@ -470,7 +462,7 @@ export class WorldOneLevelOne extends Phaser.Scene {
             {
                 this.killPlayer();
             }
-            if (this.player.y > 950) { // If the player is too low then kill them
+            if (this.player.y > 2000) { // If the player is too low then kill them
                 console.log("Player is dead");
                 if (!this.playerdead) {
                     this.killPlayer();
@@ -848,7 +840,7 @@ export class WorldOneLevelOne extends Phaser.Scene {
         if (this.player.y > 600) {
             // Action when the player reaches the desired y-coordinate
             console.log('Player has reached the desired y-coordinate');
-            this.player.setCollideWorldBounds(false);
+            //this.player.setCollideWorldBounds(false);
             // Do whatever action you need here
             if (this.lives > 1) {
                 this.lives--;

@@ -2,6 +2,10 @@ export class GameStartCutscene extends Phaser.Scene {
     constructor() {
         super("GameStartCutscene");
     }
+    init(data) {
+        this.playerX = data.playerX;
+        this.playerY = data.playerY;
+    }
     scoreText;
     gameOver = false;
     score = 0;
@@ -19,7 +23,7 @@ export class GameStartCutscene extends Phaser.Scene {
     cutscene;
     create ()
     {
-        console.log(playerx + ", " + playery);
+        console.log(this.playerX + ", " + this.playerY);
         // Create the camera
         this.cameras.main.setSize(window.innerWidth, window.innerHeight);
         //  A simple background for our game
@@ -39,7 +43,7 @@ export class GameStartCutscene extends Phaser.Scene {
         this.platforms.create(((this.iw/2)+600), 300, 'ground').setScale(21, 1).refreshBody();
         
         // The player and its settings
-        this.player = this.physics.add.sprite(playerx, playery, 'dude');
+        this.player = this.physics.add.sprite(this.playerX, this.playerY, 'dude');
 
         //  Player physics properties. Give the little guy a slight bounce.
         this.player.setBounce(0.15);
@@ -87,7 +91,6 @@ export class GameStartCutscene extends Phaser.Scene {
         //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
 //        this.physics.add.overlap(this.player, this.stars, this.collectStar, null, this);
         this.physics.add.overlap(this.player, this.startGame, this.startGameCutscene, null, this);
-        this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
         this.startGameCutscene();
     }
 
@@ -116,13 +119,6 @@ export class GameStartCutscene extends Phaser.Scene {
 
 
         this.physics.world.gravity.y = this.g;
-        if (this.gameOver)
-        {
-            this.scene.start("bootGame");
-        }
-        if (this.player.y > 1080){
-            this.scene.start("bootGame");
-        }
     }
     startGameCutscene(player, gameStart)
     {
@@ -135,58 +131,6 @@ export class GameStartCutscene extends Phaser.Scene {
         //this.scene.start("mainMenu");
 
     }
-
-
-    collectStar (player, star)
-    {
-        star.disableBody(true, true);
-
-        //  Add and update the score
-        this.score += 10;
-        this.scoreText.setText(`Score: ${this.score}`);
-
-        if(this.stars.countActive(true) === 11){
-            this.jp = 200;
-        }else if(this.stars.countActive(true) === 10){
-            //this.g = 500;
-            this.jp = 333;
-        }else if(this.stars.countActive(true) === 9){
-            //this.g = 10000;
-            this.jp = 350;
-        }else if(this.stars.countActive(true) === 8){
-            this.jp = 350;
-        }else if(this.stars.countActive(true) === 7){
-            this.g = 350;
-        }
-        
-
-
-        if (this.stars.countActive(true) === 0)
-        {
-            //  A new batch of stars to collect
-            this.stars.children.iterate(child =>
-            {
-
-                child.enableBody(true, child.x, 0, true, true);
-
-            });
-
-            const x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
-
-            const bomb = this.bombs.create(x, 16, 'bomb');
-            bomb.setBounce(1);
-            bomb.setCollideWorldBounds(true);
-            bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
-
-        }
-    }
-
-    hitBomb (player, bomb)
-    {
-        location.reload();
-    }
-
-
 
 }
 

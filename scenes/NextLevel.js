@@ -14,6 +14,8 @@ export class NextLevel extends Phaser.Scene {
         // Center of the screen
         const centerX = this.cameras.main.width / 2;
         const centerY = this.cameras.main.height / 2;
+        this.scene.launch('WorldOneLevelOne');
+        this.scene.sleep('WorldOneLevelOne');
 
         // Add respawn text
         this.add.text(centerX, centerY - 50, `World ${this.world}, Level ${this.level}`, { 

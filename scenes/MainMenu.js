@@ -198,11 +198,9 @@ export class MainMenu extends Phaser.Scene {
                 }
             }
     }
-    startGameCutscene(player, gameStart)
+    startGameCutscene()
     {
-        playerx = this.player.x;
-        playery = this.player.y;
-        this.scene.start("GameStartCutscene");       
+        this.scene.start("GameStartCutscene", { nextScene: "NextLevel", playerX: this.player.x, playerY: this.player.y });
     }
 
 
