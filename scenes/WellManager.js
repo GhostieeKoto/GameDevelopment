@@ -12,12 +12,7 @@ export class WellManager {
         let tid = canEnter ? 'Well2' : 'Well1';
         // Wait if type id is tid, does that mean type id directory would be tiddy?
         const newWell = this.WellGroup.create(this.scene.grid * x, this.scene.grid * y, tid);
-        //newWell.setImmovable(true);
         newWell.name = `Well_${id}`;
-        //newWell.setScale(3);
-        //newWell.setSize(96, 96);
-        //newWell.setOffset(0, 0);
-        //newWell.setOrigin(0, 0);
         newWell.setDepth(10);
         
         const WellProps = {
@@ -49,6 +44,8 @@ handleWellCollision(player, well) {
     this.scene.onOpenWell = true;
     // Add any specific collision handling logic here
 }
+    PlayerOnWell(){
+    }
     enterWell(){
         console.log("Entering well...");
         // Add any specific well entering logic here

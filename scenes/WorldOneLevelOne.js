@@ -49,6 +49,7 @@ export class WorldOneLevelOne extends Phaser.Scene {
     castle;
     lbname;
     bombs;
+    canRoll = false;
     sky;
     grid = 32;
     startGame;
@@ -476,6 +477,12 @@ export class WorldOneLevelOne extends Phaser.Scene {
 
             if (this.cursors.left.isDown && this.PlayerCanMove && !this.playerdead) {
                 this.resetPlayerIdleTimeout();
+                if(this.cursors.down.isDown && this.canRoll){
+                    this.player.setScale(0.25, 1);
+                    this.player.setVelocityX(-this.maxSpeed*2);
+                    this.canRoll = false;
+                    //start roll cooldown timer
+                }
                 if (this.player.body.velocity.x > -1 * this.maxSpeed) {
                     this.player.setVelocityX(this.player.body.velocity.x - this.acceleration);
                 }
