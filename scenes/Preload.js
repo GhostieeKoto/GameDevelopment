@@ -16,6 +16,8 @@ export class Preload extends Phaser.Scene {
         this.load.image('castle', 'assets/castle.png');
         this.load.image('flag', 'assets/MarioFlag.png');
         this.load.image('black', 'assets/loading.png');
+        this.load.image('Well1', 'assets/Well1.png');
+        this.load.image('Well2', 'assets/Well2.png');
         this.load.spritesheet('dude', 'assets/dudehead.png', { frameWidth: 32, frameHeight: 32 });      
         this.load.spritesheet('lbhit', 'assets/luckyblockwhite.png', { frameWidth: 32, frameHeight: 64 });
         this.load.spritesheet('brickhit', 'assets/brickhit.png', { frameWidth: 32, frameHeight: 64 });
@@ -35,7 +37,7 @@ export class Preload extends Phaser.Scene {
     }
     create() {
         this.add.text(20, 20, "Game Failed", {font: '25px Arial', fill: 'red'});
-        this.createAnimations();3
+        this.createAnimations();
         this.scene.start("mainMenu");       
     }
     createAnimations() {
