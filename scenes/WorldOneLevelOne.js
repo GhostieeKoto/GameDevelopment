@@ -504,13 +504,15 @@ export class WorldOneLevelOne extends Phaser.Scene {
             else {
                 if (this.player.body.velocity.x > 1) {
                     this.player.setVelocityX(this.player.body.velocity.x - (this.deceleration / 150 * this.player.body.velocity.x));
-                } else if (this.player.body.velocity.x < 1 && this.player.body.velocity.x > 0) {
+                } else if (this.player.body.velocity.x < 10 && this.player.body.velocity.x > 0) {
                     this.player.setVelocityX(0);
+                    this.player.anims.play('pstop', true);
                 }
 
                 if (this.player.body.velocity.x < -1) {
                     this.player.setVelocityX(this.player.body.velocity.x - (this.deceleration / 150 * this.player.body.velocity.x));
-                } else if (this.player.body.velocity.x > -1 && this.player.body.velocity.x < 0) {
+                } else if (this.player.body.velocity.x > -10 && this.player.body.velocity.x < 0) {
+                    this.player.anims.play('stop', true);
                     this.player.setVelocityX(0);
                 }
                 //this.player.anims.play('turn', true); // Once we switch assets, an idle animation will be created.

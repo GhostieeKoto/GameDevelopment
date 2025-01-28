@@ -133,6 +133,12 @@ export class Preload extends Phaser.Scene {
             frameRate: 10,
             repeat: 0
         });
+        this.anims.create({
+            key: 'pstop',
+            frames: this.anims.generateFrameNumbers('stop', { start: 0, end: 8 }),
+            frameRate: 10,
+            repeat: 0
+        });
     }
 
 }
