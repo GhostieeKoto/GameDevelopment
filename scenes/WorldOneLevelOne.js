@@ -15,7 +15,7 @@ export class WorldOneLevelOne extends Phaser.Scene {
         this.wellManager = null;
         this.key1;
         this.acceleration = 10; // Acceleration rate
-        this.deceleration = 10; // Deceleration rate
+        this.deceleration = 15; // Deceleration rate
         this.maxSpeed = this.pspeed; // Maximum speed (use your existing pspeed value)
         this.inCutscene = true;
         this.timeLeft = 400;
@@ -502,17 +502,16 @@ export class WorldOneLevelOne extends Phaser.Scene {
                 //this.player.setOffset(65, 70);
             }
             else {
-                if (this.player.body.velocity.x > 1) {
+                if (this.player.body.velocity.x > 75) {
                     this.player.setVelocityX(this.player.body.velocity.x - (this.deceleration / 150 * this.player.body.velocity.x));
-                } else if (this.player.body.velocity.x < 10 && this.player.body.velocity.x > 0) {
+                } else if (this.player.body.velocity.x < 75 && this.player.body.velocity.x > 0) {
                     this.player.setVelocityX(0);
                     this.player.anims.play('pstop', true);
                 }
-
-                if (this.player.body.velocity.x < -1) {
+                if (this.player.body.velocity.x < -75) {
                     this.player.setVelocityX(this.player.body.velocity.x - (this.deceleration / 150 * this.player.body.velocity.x));
-                } else if (this.player.body.velocity.x > -10 && this.player.body.velocity.x < 0) {
-                    this.player.anims.play('stop', true);
+                } else if (this.player.body.velocity.x > -75 && this.player.body.velocity.x < 0) {
+                    this.player.anims.play('pstop', true);
                     this.player.setVelocityX(0);
                 }
                 //this.player.anims.play('turn', true); // Once we switch assets, an idle animation will be created.
